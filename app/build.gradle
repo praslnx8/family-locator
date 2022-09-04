@@ -7,12 +7,12 @@ plugins {
 }
 
 android {
-    compileSdk rootProject.ext.target_sdk
+    compileSdk target_sdk
 
     defaultConfig {
         applicationId "app.family.locator"
-        minSdk rootProject.ext.min_sdk
-        targetSdk rootProject.ext.target_sdk
+        minSdk min_sdk
+        targetSdk target_sdk
         versionCode 1
         versionName "1.0"
 
@@ -69,7 +69,7 @@ dependencies {
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 
     //Android Hilt
-    implementation "androidx.hilt:hilt-work:$android_hilt_version"
+    //implementation "androidx.hilt:hilt-work:$android_hilt_version"
     kapt "androidx.hilt:hilt-compiler:$android_hilt_version"
     implementation "androidx.hilt:hilt-navigation-compose:$android_hilt_version"
 
