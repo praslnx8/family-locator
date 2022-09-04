@@ -43,4 +43,7 @@ dependencies {
 
     //Android Junit
     androidTestImplementation "androidx.test.ext:junit:$android_junit_version"
+
+    //Domain
+    implementation(project(":domain"))
 }

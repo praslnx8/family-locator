@@ -40,4 +40,7 @@ dependencies {
 
     //Junit
     testImplementation "junit:junit:$junit_version"
+
+    //API
+    implementation(project(":api"))
 }
