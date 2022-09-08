@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+option java_package = "app.family.api.models";
+option java_multiple_files = true;
+
+message StatusProto {
+  //Location
+  double lat = 1;
+  double lon = 2;
+  string locality = 3;
+  int64 location_time = 4;
+
+  //Weather
+  double temperature = 5;
+  string weather_type = 6;
+  int64 weather_time = 7;
+
+  //Activity
+  string activity = 8;
+  bool is_online = 9;
+  int64 activity_time = 10;
+
+  //Phone Status
+  bool is_phone_silent = 11;
+  int32 battery_percentage = 12;
+
+  //Overall Data
+  int64 update_time = 13;
+}

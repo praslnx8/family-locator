@@ -94,5 +94,6 @@ dependencies {
 
     //Presentation
     implementation(project(":presentation"))
-
+    //Domain
+    implementation(project(":domain"))
 }

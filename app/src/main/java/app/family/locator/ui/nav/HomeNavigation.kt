@@ -10,7 +10,7 @@ import androidx.navigation.navDeepLink
 import app.family.locator.ui.screens.HomeScreen
 import app.family.locator.ui.screens.LoginScreen
 import app.family.locator.ui.screens.UserDetailScreen
-import app.family.locator.utils.ScreenRoute
+import app.family.locator.ui.route.ScreenRoute
 
 @Composable
 fun HomeNavigation() {

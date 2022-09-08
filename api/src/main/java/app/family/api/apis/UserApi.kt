@@ -1,6 +1,6 @@
 package app.family.api.apis
 
-import app.family.api.models.UserDTO
+import app.family.api.models.UserDto
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.flow
 
 class UserApi(private val auth: FirebaseAuth) {
 
-    fun getUser(): Flow<UserDTO?> = flow {
+    fun getUser(): Flow<UserDto?> = flow {
         emit(auth.currentUser?.let { convertToUserDto(it) })
     }
 
@@ -26,7 +26,7 @@ class UserApi(private val auth: FirebaseAuth) {
         awaitClose{  }
     }
 
-    fun signIn(): Flow<UserDTO?> = callbackFlow {
+    fun signIn(): Flow<UserDto?> = callbackFlow {
         auth.signInAnonymously().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 trySend(auth.currentUser?.let { convertToUserDto(it) })
@@ -37,7 +37,7 @@ class UserApi(private val auth: FirebaseAuth) {
         awaitClose{  }
     }
 
-    private fun convertToUserDto(firebaseUser: FirebaseUser): UserDTO {
-        return UserDTO(id = firebaseUser.uid, name = firebaseUser.displayName)
+    private fun convertToUserDto(firebaseUser: FirebaseUser): UserDto {
+        return UserDto(id = firebaseUser.uid, name = firebaseUser.displayName)
     }
 }

@@ -1,4 +1,4 @@
-package app.family.locator.utils
+package app.family.locator.ui.route
 
 object ScreenRoute {
 
