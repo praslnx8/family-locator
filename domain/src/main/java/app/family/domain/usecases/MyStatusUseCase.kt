@@ -8,11 +8,11 @@ import app.family.domain.models.status.Status
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class FetchMyStatusUseCase(
+class MyStatusUseCase(
     private val myStatusApi: MyStatusApi
 ) {
 
-    fun getMyStatus(): Flow<Status> {
+    fun getStatus(): Flow<Status> {
         return myStatusApi.getStatus().map { statusDto ->
             Status(
                 locationStatus = getLocationStatus(statusDto),
@@ -28,7 +28,8 @@ class FetchMyStatusUseCase(
             return LocationStatus(
                 locality = statusDto.locality,
                 lat = statusDto.lat,
-                lon = statusDto.lon
+                lon = statusDto.lon,
+                time = statusDto.locationTime
             )
         }
         return null
@@ -37,7 +38,8 @@ class FetchMyStatusUseCase(
     private fun getPhoneStatus(statusDto: StatusDto): PhoneStatus {
         return PhoneStatus(
             isPhoneSilent = statusDto.isPhoneSilent,
-            batteryPercentage = statusDto.batteryPercentage
+            batteryPercentage = statusDto.batteryPercentage,
+            time = statusDto.updateTime
         )
     }
 }

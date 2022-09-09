@@ -51,15 +51,13 @@ class APIModule {
 
     @Singleton
     @Provides
-    fun provideLocalityInfoProvider(context: Context): LocalityApi {
+    fun provideLocalityInfoProvider(@ApplicationContext context: Context): LocalityApi {
         return LocalityApi(Geocoder(context, Locale.getDefault()))
     }
 
     @Singleton
     @Provides
-    fun provideDeviceApi(context: Context): DeviceApi {
+    fun provideDeviceApi(@ApplicationContext context: Context): DeviceApi {
         return DeviceApi(context, context.getSystemService(Context.AUDIO_SERVICE) as AudioManager)
     }
-
-
 }

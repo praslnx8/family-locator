@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Family Locator</string>
     <string name="logo">Logo</string>
+    <string name="fg_notif_channel_name">Sync Service</string>
+    <string name="fg_notif_channel_desc">Sync Service Running in the Background</string>
+    <string name="fg_notif_title">Sync Service Running</string>
+    <string name="fg_notif_desc">Syncing your status in Background</string>
 </resources>

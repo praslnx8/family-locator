@@ -70,15 +70,22 @@ dependencies {
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 
     //Android Hilt
-    //implementation "androidx.hilt:hilt-work:$android_hilt_version"
+    implementation "androidx.hilt:hilt-work:$android_hilt_version"
     kapt "androidx.hilt:hilt-compiler:$android_hilt_version"
     implementation "androidx.hilt:hilt-navigation-compose:$android_hilt_version"
+
+    //WorkManager
+    implementation "androidx.work:work-runtime-ktx:2.7.1"
 
     //Material3
     implementation 'androidx.compose.material3:material3:1.0.0-beta01'
 
     //Activity
     implementation 'androidx.activity:activity-compose:1.5.1'
+
+    //Activity Recognition
+    implementation "com.google.android.gms:play-services-location:$location_version"
+
 
     //Lifecycle
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
