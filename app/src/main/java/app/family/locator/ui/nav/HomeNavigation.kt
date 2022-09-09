@@ -34,9 +34,7 @@ fun HomeNavigation() {
             route = ScreenRoute.Home.TEMPLATE,
             deepLinks = listOf(navDeepLink { uriPattern = deepLinkUri + ScreenRoute.Home.TEMPLATE })
         ) {
-            HomeScreen(
-
-            )
+            HomeScreen()
         }
         composable(
             route = ScreenRoute.UserDetail.TEMPLATE,

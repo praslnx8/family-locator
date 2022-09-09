@@ -8,6 +8,7 @@ import app.family.api.apis.UserApi
 import app.family.domain.usecases.LoginUseCase
 import app.family.domain.usecases.MyStatusSyncUseCase
 import app.family.domain.usecases.MyStatusUseCase
+import app.family.domain.usecases.UserUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,13 +19,11 @@ import javax.inject.Singleton
 @Module
 class DomainModule {
 
-    @Singleton
     @Provides
     fun provideLoginUseCase(userApi: UserApi): LoginUseCase {
         return LoginUseCase(userApi)
     }
 
-    @Singleton
     @Provides
     fun provideStatusSyncUseCase(
         locationAPI: LocationAPI,
@@ -35,9 +34,13 @@ class DomainModule {
         return MyStatusSyncUseCase(locationAPI, localityApi, myStatusApi, deviceApi)
     }
 
-    @Singleton
     @Provides
     fun provideMyStatusUseCase(myStatusApi: MyStatusApi): MyStatusUseCase {
         return MyStatusUseCase(myStatusApi)
+    }
+
+    @Provides
+    fun provideUserUseCase(userApi: UserApi): UserUseCase {
+        return UserUseCase(userApi)
     }
 }

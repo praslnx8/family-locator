@@ -3,6 +3,7 @@ package app.family.locator.ui.screens
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -25,7 +26,9 @@ fun LoginScreen(
         )
     }
 
-    if (loginState.value.loggedIn) {
-        onLogin()
+    LaunchedEffect(key1 = loginState.value.loggedIn) {
+        if (loginState.value.loggedIn) {
+            onLogin()
+        }
     }
 }
