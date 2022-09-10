@@ -22,7 +22,8 @@ fun HomeScreen() {
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /*TODO*/ },
+                onClick = {
+                },
             ) {
                 Icon(imageVector = Icons.Filled.Add, contentDescription = "Invite Family Member")
             }

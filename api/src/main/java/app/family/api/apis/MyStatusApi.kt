@@ -71,10 +71,10 @@ class MyStatusApi(
             temperature = if (statusProto.temperature != 0.0) statusProto.temperature else null,
             weatherType = statusProto.weatherType.ifBlank { null },
             weatherTime = if (statusProto.weatherTime != 0L) statusProto.weatherTime else null,
-            activity = statusProto.activity.ifBlank { null },
+            activityType = statusProto.activity.ifBlank { null },
             isOnline = statusProto.isOnline,
             activityTime = if (statusProto.activityTime != 0L) statusProto.activityTime else null,
-            isPhoneSilent = statusProto.isPhoneSilent,
+            isDeviceSilent = statusProto.isPhoneSilent,
             batteryPercentage = statusProto.batteryPercentage,
             updateTime = statusProto.updateTime,
         )

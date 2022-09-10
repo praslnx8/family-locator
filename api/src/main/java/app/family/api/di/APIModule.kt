@@ -8,6 +8,7 @@ import androidx.datastore.dataStore
 import app.family.api.apis.DeviceApi
 import app.family.api.apis.FamilyApi
 import app.family.api.apis.FamilyStatusApi
+import app.family.api.apis.InviteApi
 import app.family.api.apis.LocalityApi
 import app.family.api.apis.LocationAPI
 import app.family.api.apis.MyStatusApi
@@ -75,5 +76,11 @@ class APIModule {
     @Provides
     fun provideFamilyStatusApi(): FamilyStatusApi {
         return FamilyStatusApi(Firebase.database)
+    }
+
+    @Singleton
+    @Provides
+    fun provideInviteApi(): InviteApi {
+        return InviteApi(Firebase.database)
     }
 }

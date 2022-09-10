@@ -19,23 +19,35 @@ class MyStatusUploadUseCase(
     private val randomPassCodeGenerator: RandomPassCodeGenerator
 ) {
 
-    fun uploadMyStatus(): Flow<Unit> = flow {
+    fun uploadMyStatus(): Flow<Boolean> = flow {
         val user = userApi.getUser().first() ?: throw NotLoggedInException()
         statusApi.getStatus().collect { status ->
-            val familyId = getOrCreateFamilyId(user.id)
-            familyStatusApi.pushStatus(user.id, user.name ?: "", familyId, status).collect()
+            val familyId = getOrCreateFamilyId(user.id).first()
+            if (familyId != null) {
+                val status =
+                    familyStatusApi.pushStatus(user.id, user.name ?: "", familyId, status).first()
+                emit(status)
+            } else {
+                emit(false)
+            }
         }
-        emit(Unit)
     }
 
-    private suspend fun getOrCreateFamilyId(userId: String): String {
+    private suspend fun getOrCreateFamilyId(userId: String): Flow<String?> = flow {
         val familyId = familyApi.getFamilyId(userId).first()
         if (familyId == null) {
             val passCode = randomPassCodeGenerator.generate()
-            familyApi.createFamily(familyId = userId, password = passCode).collect()
-            familyApi.joinFamily(userId = userId, familyId = userId, password = passCode).collect()
-            return userId
+            val isFamilyCreated =
+                familyApi.createFamily(familyId = userId, password = passCode).first()
+            if (isFamilyCreated) {
+                familyApi.joinFamily(userId = userId, familyId = userId, password = passCode)
+                    .collect()
+                emit(userId)
+            } else {
+                emit(null)
+            }
+        } else {
+            emit(familyId)
         }
-        return familyId
     }
 }

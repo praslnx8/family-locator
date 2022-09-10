@@ -40,16 +40,16 @@ class MyStatusUseCase(
 
     private fun getDeviceStatus(statusDto: StatusDto): DeviceStatus {
         return DeviceStatus(
-            isPhoneSilent = statusDto.isPhoneSilent,
+            isPhoneSilent = statusDto.isDeviceSilent,
             batteryPercentage = statusDto.batteryPercentage,
             time = statusDto.updateTime
         )
     }
 
     private fun getActivityStatus(statusDto: StatusDto): ActivityStatus? {
-        if (statusDto.activity.isNullOrBlank().not()) {
+        if (statusDto.activityType.isNullOrBlank().not()) {
             return ActivityStatus(
-                type = ActivityType.valueOf(statusDto.activity?:""),
+                type = ActivityType.valueOf(statusDto.activityType?:""),
                 time = statusDto.activityTime?:0L
             )
         }

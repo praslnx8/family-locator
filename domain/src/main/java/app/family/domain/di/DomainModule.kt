@@ -3,10 +3,12 @@ package app.family.domain.di
 import app.family.api.apis.DeviceApi
 import app.family.api.apis.FamilyApi
 import app.family.api.apis.FamilyStatusApi
+import app.family.api.apis.InviteApi
 import app.family.api.apis.LocalityApi
 import app.family.api.apis.LocationAPI
 import app.family.api.apis.MyStatusApi
 import app.family.api.apis.UserApi
+import app.family.domain.usecases.FamilyInviteUseCase
 import app.family.domain.usecases.LoginUseCase
 import app.family.domain.usecases.MyStatusSyncUseCase
 import app.family.domain.usecases.MyStatusUploadUseCase
@@ -67,5 +69,15 @@ class DomainModule {
             familyStatusApi = familyStatusApi,
             randomPassCodeGenerator = randomPassCodeGenerator
         )
+    }
+
+    @Provides
+    fun provideInviteFamilyUseCase(
+        userApi: UserApi,
+        familyApi: FamilyApi,
+        inviteApi: InviteApi,
+        randomPassCodeGenerator: RandomPassCodeGenerator
+    ): FamilyInviteUseCase {
+        return FamilyInviteUseCase(userApi, inviteApi, familyApi, randomPassCodeGenerator)
     }
 }

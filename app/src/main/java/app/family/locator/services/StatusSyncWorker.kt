@@ -22,10 +22,13 @@ class StatusSyncWorker @AssistedInject constructor(
 ) : CoroutineWorker(appContext, workerParameters) {
 
     override suspend fun doWork(): Result {
-        syncUseCase.syncNow().collect {
-            uploadUseCase.uploadMyStatus().collect()
+        syncUseCase.syncNow().collect()
+        val isUploaded = uploadUseCase.uploadMyStatus().first()
+        return if (isUploaded) {
+            Result.success()
+        } else {
+            Result.retry()
         }
-        return Result.success()
     }
 
     companion object {
