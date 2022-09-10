@@ -7,4 +7,6 @@ data class UserStatusDto(
     val name: String,
     @get:PropertyName("status")
     val statusDto: StatusDto
-)
+) {
+    constructor() : this("", StatusDto())
+}

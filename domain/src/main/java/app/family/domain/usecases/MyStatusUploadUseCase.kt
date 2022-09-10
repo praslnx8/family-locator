@@ -4,7 +4,6 @@ import app.family.api.apis.FamilyApi
 import app.family.api.apis.FamilyStatusApi
 import app.family.api.apis.MyStatusApi
 import app.family.api.apis.UserApi
-import app.family.domain.exceptions.NotLoggedInException
 import app.family.domain.utils.RandomPassCodeGenerator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -20,17 +19,23 @@ class MyStatusUploadUseCase(
 ) {
 
     fun uploadMyStatus(): Flow<Boolean> = flow {
-        val user = userApi.getUser().first() ?: throw NotLoggedInException()
-        statusApi.getStatus().collect { status ->
-            val familyId = getOrCreateFamilyId(user.id).first()
-            if (familyId != null) {
-                val status =
-                    familyStatusApi.pushStatus(user.id, user.name ?: "", familyId, status).first()
-                emit(status)
-            } else {
-                emit(false)
+        val user = userApi.getUser().first()
+        if (user == null) {
+            emit(false)
+        } else {
+            statusApi.getStatus().collect { status ->
+                val familyId = getOrCreateFamilyId(user.id).first()
+                if (familyId != null) {
+                    val isStatusUploaded =
+                        familyStatusApi.pushStatus(user.id, user.name ?: "", familyId, status)
+                            .first()
+                    emit(isStatusUploaded)
+                } else {
+                    emit(false)
+                }
             }
         }
+
     }
 
     private suspend fun getOrCreateFamilyId(userId: String): Flow<String?> = flow {

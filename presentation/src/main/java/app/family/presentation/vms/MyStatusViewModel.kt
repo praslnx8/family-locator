@@ -1,7 +1,6 @@
 package app.family.presentation.vms
 
 import androidx.lifecycle.ViewModel
-import app.family.domain.exceptions.NotLoggedInException
 import app.family.domain.usecases.MyStatusUseCase
 import app.family.domain.usecases.UserUseCase
 import app.family.presentation.models.StatusState
@@ -19,7 +18,7 @@ class MyStatusViewModel @Inject constructor(
     fun getMyStatus(): Flow<StatusState> {
         return combine(userUseCase.getUser(), myStatusUseCase.getStatus()) { user, status ->
             StatusState(
-                name = user.name ?: throw NotLoggedInException(),
+                name = user?.name ?: "",
                 activityType = status.activityStatus?.type,
                 activityTime = status.activityStatus?.time,
                 locality = status.locationStatus?.locality,

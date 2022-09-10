@@ -38,4 +38,6 @@ data class StatusDto(
 //Overall Data
     @get:PropertyName("update_time")
     val updateTime: Long,
-)
+) {
+    constructor() : this(null,null,null,null,null,null,null,null,null,null,false,0,0L)
+}

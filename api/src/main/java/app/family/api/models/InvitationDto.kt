@@ -7,4 +7,6 @@ data class InvitationDto(
     val familyId: String,
     @get:PropertyName("family_password")
     val familyPassword: String
-)
+) {
+    constructor() : this("", "")
+}
