@@ -14,6 +14,10 @@ class LoginUseCase(private val userApi: UserApi) {
         emit(userDTO?.let { mapToUser(it) })
     }
 
+    fun setName(name: String): Flow<Boolean> {
+        return userApi.setName(name)
+    }
+
     private fun mapToUser(userDTO: UserDto): User {
         return User(id = userDTO.id, name = userDTO.name)
     }

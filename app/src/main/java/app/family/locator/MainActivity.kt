@@ -13,6 +13,7 @@ import app.family.locator.services.StatusSyncService
 import app.family.locator.services.StatusSyncWorker
 import app.family.locator.ui.nav.HomeNavigation
 import app.family.locator.ui.theme.FamilyLocatorTheme
+import com.google.accompanist.insets.ProvideWindowInsets
 import dagger.hilt.android.AndroidEntryPoint
 
 

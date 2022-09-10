@@ -7,4 +7,6 @@
     <string name="fg_notif_desc">Syncing your status in Background</string>
     <string name="request_permission_message">Required Location permissions to run the app</string>
     <string name="grant_permission_button">Grant Permission</string>
+    <string name="login">Login</string>
+    <string name="add_nick_name">Add your Nick Name</string>
 </resources>
