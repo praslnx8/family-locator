@@ -7,19 +7,24 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import app.family.domain.usecases.MyStatusSyncUseCase
+import app.family.domain.usecases.MyStatusUploadUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import java.time.Duration
 
 class StatusSyncWorker @AssistedInject constructor(
     @Assisted private val appContext: Context,
     @Assisted workerParameters: WorkerParameters,
     private val syncUseCase: MyStatusSyncUseCase,
+    private val uploadUseCase: MyStatusUploadUseCase
 ) : CoroutineWorker(appContext, workerParameters) {
 
     override suspend fun doWork(): Result {
-        syncUseCase.syncNow().collect()
+        syncUseCase.syncNow().collect {
+            uploadUseCase.uploadMyStatus().collect()
+        }
         return Result.success()
     }
 

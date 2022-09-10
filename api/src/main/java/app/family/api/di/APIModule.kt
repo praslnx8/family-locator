@@ -6,6 +6,8 @@ import android.media.AudioManager
 import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
 import app.family.api.apis.DeviceApi
+import app.family.api.apis.FamilyApi
+import app.family.api.apis.FamilyStatusApi
 import app.family.api.apis.LocalityApi
 import app.family.api.apis.LocationAPI
 import app.family.api.apis.MyStatusApi
@@ -14,6 +16,8 @@ import app.family.api.models.StatusProto
 import app.family.api.proto.StatusProtoSerializer
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -59,5 +63,17 @@ class APIModule {
     @Provides
     fun provideDeviceApi(@ApplicationContext context: Context): DeviceApi {
         return DeviceApi(context, context.getSystemService(Context.AUDIO_SERVICE) as AudioManager)
+    }
+
+    @Singleton
+    @Provides
+    fun provideFamilyApi(): FamilyApi {
+        return FamilyApi(Firebase.database)
+    }
+
+    @Singleton
+    @Provides
+    fun provideFamilyStatusApi(): FamilyStatusApi {
+        return FamilyStatusApi(Firebase.database)
     }
 }

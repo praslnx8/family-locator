@@ -7,7 +7,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
-class MyStatusApi(private val statusDataStore: DataStore<StatusProto>) {
+class MyStatusApi(
+    private val statusDataStore: DataStore<StatusProto>
+) {
 
     fun getStatus(): Flow<StatusDto> {
         return statusDataStore.data.map { convertToStatusDto(it) }
@@ -23,6 +25,7 @@ class MyStatusApi(private val statusDataStore: DataStore<StatusProto>) {
                 .setUpdateTime(time)
                 .build()
         }
+        emit(Unit)
     }
 
     fun updateWeather(temperature: Double, weatherType: String, time: Long): Flow<Unit> = flow {
@@ -34,6 +37,7 @@ class MyStatusApi(private val statusDataStore: DataStore<StatusProto>) {
                 .setUpdateTime(time)
                 .build()
         }
+        emit(Unit)
     }
 
     fun updatePhoneInfo(batteryPercentage: Int, isPhoneSilent: Boolean, time: Long): Flow<Unit> =
@@ -45,6 +49,7 @@ class MyStatusApi(private val statusDataStore: DataStore<StatusProto>) {
                     .setUpdateTime(time)
                     .build()
             }
+            emit(Unit)
         }
 
     fun updateActivity(activity: String, time: Long): Flow<Unit> = flow {
@@ -54,6 +59,7 @@ class MyStatusApi(private val statusDataStore: DataStore<StatusProto>) {
                 .setUpdateTime(time)
                 .build()
         }
+        emit(Unit)
     }
 
     private fun convertToStatusDto(statusProto: StatusProto): StatusDto {
