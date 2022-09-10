@@ -41,6 +41,7 @@ class MyStatusSyncUseCase(
                     System.currentTimeMillis()
                 ).collect()
             }
+            syncDeviceApi().collect()
         }
     }
 
@@ -56,6 +57,7 @@ class MyStatusSyncUseCase(
                         System.currentTimeMillis()
                     ).collect()
                 }
+                syncDeviceApi().collect()
             }
         }
     }

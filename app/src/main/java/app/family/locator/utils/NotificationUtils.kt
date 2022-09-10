@@ -3,14 +3,9 @@ package app.family.locator.utils;
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.TaskStackBuilder
 import android.content.Context
-import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.net.toUri
-import app.family.locator.MainActivity
 import app.family.locator.R
 
 class NotificationUtils(
@@ -33,20 +28,9 @@ class NotificationUtils(
         return NotificationCompat.Builder(context, FOREGROUND_SERVICE_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_stat_notification)
             .setContentTitle(context.getString(R.string.fg_notif_title))
+            .setOngoing(true)
+            .setCategory(Notification.CATEGORY_LOCATION_SHARING)
             .setContentText(context.getString(R.string.fg_notif_desc))
-            .setContentIntent(
-                TaskStackBuilder.create(context).run {
-                    addNextIntentWithParentStack(
-                        Intent(
-                            Intent.ACTION_VIEW,
-                            "expense://home".toUri(),
-                            context,
-                            MainActivity::class.java
-                        )
-                    )
-                    getPendingIntent(1, PendingIntent.FLAG_UPDATE_CURRENT)
-                }
-            )
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .build()
     }

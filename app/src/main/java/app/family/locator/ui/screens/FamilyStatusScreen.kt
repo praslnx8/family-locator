@@ -8,7 +8,7 @@ import app.family.presentation.models.StatusState
 import app.family.presentation.vms.MyStatusViewModel
 
 @Composable
-fun MyStatusScreen(viewModel: MyStatusViewModel = hiltViewModel()) {
+fun FamilyStatusScreen(viewModel: MyStatusViewModel = hiltViewModel()) {
     val statusState = viewModel.getMyStatus().collectAsState(initial = StatusState())
     StatusView(statusState = statusState.value)
 }
