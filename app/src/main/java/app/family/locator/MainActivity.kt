@@ -1,5 +1,6 @@
 package app.family.locator
 
+import android.Manifest
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,6 +14,7 @@ import app.family.locator.services.StatusSyncWorker
 import app.family.locator.ui.nav.HomeNavigation
 import app.family.locator.ui.theme.FamilyLocatorTheme
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -29,7 +31,12 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    HomeNavigation()
+                    HomeNavigation {
+                        requestPermissions(
+                            arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
+                            1
+                        )
+                    }
                 }
             }
         }

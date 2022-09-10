@@ -6,6 +6,10 @@ object ScreenRoute {
         const val TEMPLATE = "login"
     }
 
+    object PermissionCheck {
+        const val TEMPLATE = "permission_check"
+    }
+
     object Home {
         const val TEMPLATE = "home"
     }
