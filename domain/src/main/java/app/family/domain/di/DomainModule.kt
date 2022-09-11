@@ -8,8 +8,11 @@ import app.family.api.apis.LocalityApi
 import app.family.api.apis.LocationAPI
 import app.family.api.apis.MyStatusApi
 import app.family.api.apis.UserApi
+import app.family.domain.mappers.StatusMapper
+import app.family.domain.mappers.UserStatusMapper
 import app.family.domain.usecases.FamilyCreateUseCase
 import app.family.domain.usecases.FamilyInviteUseCase
+import app.family.domain.usecases.FetchFamilyStatusUseCase
 import app.family.domain.usecases.LoginUseCase
 import app.family.domain.usecases.MyStatusSyncUseCase
 import app.family.domain.usecases.MyStatusUseCase
@@ -31,6 +34,16 @@ class DomainModule {
     }
 
     @Provides
+    fun provideStatusMapper(): StatusMapper {
+        return StatusMapper()
+    }
+
+    @Provides
+    fun provideUserStatusMapper(statusMapper: StatusMapper): UserStatusMapper {
+        return UserStatusMapper(statusMapper)
+    }
+
+    @Provides
     fun provideStatusSyncUseCase(
         locationAPI: LocationAPI,
         localityApi: LocalityApi,
@@ -41,8 +54,11 @@ class DomainModule {
     }
 
     @Provides
-    fun provideMyStatusUseCase(myStatusApi: MyStatusApi): MyStatusUseCase {
-        return MyStatusUseCase(myStatusApi)
+    fun provideMyStatusUseCase(
+        myStatusApi: MyStatusApi,
+        statusMapper: StatusMapper
+    ): MyStatusUseCase {
+        return MyStatusUseCase(myStatusApi, statusMapper)
     }
 
     @Provides
@@ -95,5 +111,15 @@ class DomainModule {
             familyCreateUseCase,
             randomPassCodeGenerator
         )
+    }
+
+    @Provides
+    fun provideFetchFamilyStatusUseCase(
+        authApi: AuthApi,
+        userApi: UserApi,
+        familyApi: FamilyApi,
+        userStatusMapper: UserStatusMapper
+    ): FetchFamilyStatusUseCase {
+        return FetchFamilyStatusUseCase(authApi, userApi, familyApi, userStatusMapper)
     }
 }

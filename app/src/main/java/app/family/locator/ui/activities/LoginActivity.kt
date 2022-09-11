@@ -1,6 +1,7 @@
-package app.family.locator
+package app.family.locator.ui.activities
 
 import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -8,21 +9,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import app.family.locator.services.ActivityTransitionReceiver
-import app.family.locator.services.StatusSyncService
-import app.family.locator.services.StatusSyncWorker
-import app.family.locator.ui.nav.HomeNavigation
+import app.family.locator.ui.nav.LoginNavigation
 import app.family.locator.ui.theme.FamilyLocatorTheme
-import com.google.accompanist.insets.ProvideWindowInsets
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class LoginActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         attachUI()
-        syncStatus()
     }
 
     private fun attachUI() {
@@ -32,20 +28,34 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    HomeNavigation {
+                    LoginNavigation {
                         requestPermissions(
                             arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
-                            1
+                            BG_LOC_PERMISSION_REQ_CODE
                         )
+                        checkAndNavigate()
                     }
                 }
             }
         }
     }
 
-    private fun syncStatus() {
-        ActivityTransitionReceiver.requestForActivityDetection(this)
-        StatusSyncService.startService(this)
-        StatusSyncWorker.startPeriodicWork(this)
+    @Deprecated("Deprecated in Java")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>, grantResults: IntArray
+    ) {
+        checkAndNavigate()
+    }
+
+    private fun checkAndNavigate() {
+        if (checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            MainActivity.startActivity(this)
+            finish()
+        }
+    }
+
+    companion object {
+        private const val BG_LOC_PERMISSION_REQ_CODE = 1
     }
 }

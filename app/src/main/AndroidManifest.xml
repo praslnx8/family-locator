@@ -19,7 +19,7 @@
         android:theme="@style/Theme.FamilyLocator"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.activities.LoginActivity"
             android:exported="true"
             android:theme="@style/Theme.FamilyLocator"
             android:windowSoftInputMode="adjustResize">
@@ -28,6 +28,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.activities.MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.FamilyLocator"
+            android:windowSoftInputMode="adjustResize" />
 
         <service
             android:name=".services.StatusSyncService"

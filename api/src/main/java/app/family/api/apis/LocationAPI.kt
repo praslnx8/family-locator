@@ -26,9 +26,9 @@ class LocationAPI(
 
     fun listenToLocationChange(): Flow<LocationDto> = callbackFlow {
         val locationRequest = LocationRequest.create().apply {
-            interval = TimeUnit.MINUTES.toMillis(15)
+            interval = TimeUnit.MINUTES.toMillis(10)
             fastestInterval = TimeUnit.MINUTES.toMillis(5)
-            smallestDisplacement = 100.0F
+
         }
 
         val locationCallback = object : LocationCallback() {

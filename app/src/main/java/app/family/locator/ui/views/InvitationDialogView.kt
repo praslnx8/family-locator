@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
@@ -18,6 +19,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -44,11 +46,15 @@ fun InvitationDialogView(
     onDismiss: () -> Unit,
     viewModel: InvitationViewModel = hiltViewModel()
 ) {
-    val invitationKey = viewModel.getInviteKey().collectAsState(initial = "")
-    val isFamilyJoined = viewModel.isFamilyJoinedState.collectAsState()
+    val invitationViewState = viewModel.invitationViewState.collectAsState()
     val context = LocalContext.current
 
-    if (isFamilyJoined.value) {
+    LaunchedEffect(key1 = Unit) {
+        viewModel.getInviteKey()
+    }
+
+    if (invitationViewState.value.isJoinedFamily) {
+        viewModel.onExit()
         onDismiss()
     }
 
@@ -86,16 +92,21 @@ fun InvitationDialogView(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 }) {
-                Text(
-                    text = invitationKey.value ?: "",
-                    style = MaterialTheme.typography.displayMedium,
-                    modifier = Modifier.padding(dimensionResource(id = R.dimen.default_padding))
-                )
+                if (invitationViewState.value.isFetchingInviteKey) {
+                    CircularProgressIndicator(modifier = Modifier.padding(dimensionResource(id = R.dimen.default_padding)))
+                } else {
+                    Text(
+                        text = invitationViewState.value.inviteKey,
+                        style = MaterialTheme.typography.displayMedium,
+                        modifier = Modifier.padding(dimensionResource(id = R.dimen.default_padding))
+                    )
+                }
+
             }
 
             OutlinedButton(
                 onClick = {
-                    ShareUtils.shareInviteKey(context, invitationKey.value ?: "")
+                    ShareUtils.shareInviteKey(context, invitationViewState.value.inviteKey)
                     onDismiss()
                 },
                 modifier = Modifier
@@ -179,20 +190,27 @@ fun InvitationDialogView(
                         end.linkTo(parent.end)
                     }
             )
-            FilledTonalButton(
-                onClick = { viewModel.joinFamily(inviteKeyState.value) },
-                enabled = inviteKeyState.value.isNotBlank(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .constrainAs(joinBtn) {
-                        top.linkTo(inviteEditText.bottom)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    }
-            ) {
-                Text(text = "Join", style = MaterialTheme.typography.labelLarge)
+            if (invitationViewState.value.isJoiningFamily) {
+                CircularProgressIndicator(modifier = Modifier.constrainAs(joinBtn) {
+                    top.linkTo(inviteEditText.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                })
+            } else {
+                FilledTonalButton(
+                    onClick = { viewModel.joinFamily(inviteKeyState.value) },
+                    enabled = inviteKeyState.value.isNotBlank(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .constrainAs(joinBtn) {
+                            top.linkTo(inviteEditText.bottom)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        }
+                ) {
+                    Text(text = "Join", style = MaterialTheme.typography.labelLarge)
+                }
             }
-
         }
     }
 }

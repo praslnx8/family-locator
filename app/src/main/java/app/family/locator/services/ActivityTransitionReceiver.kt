@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import app.family.domain.models.status.ActivityType
 import app.family.domain.usecases.MyStatusSyncUseCase
 import com.google.android.gms.location.ActivityRecognition
@@ -22,9 +23,11 @@ class ActivityTransitionReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
         if (ActivityTransitionResult.hasResult(intent)) {
+            Log.i("Activity Detection", "Detected Activity")
             val result = intent?.let { ActivityTransitionResult.extractResult(intent) }
             result?.let {
                 result.transitionEvents.forEach { event ->
+                    Log.i("Activity Detection", "Detected Activity " + event.activityType)
                     if (event.transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
                         val activityType = when (event.activityType) {
                             DetectedActivity.ON_FOOT -> ActivityType.WALKING
