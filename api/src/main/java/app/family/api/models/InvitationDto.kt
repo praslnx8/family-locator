@@ -4,9 +4,9 @@ import com.google.firebase.database.PropertyName
 
 data class InvitationDto(
     @get:PropertyName("family_id")
-    val familyId: String,
+    @set:PropertyName("family_id")
+    var familyId: String = "",
     @get:PropertyName("family_password")
-    val familyPassword: String
-) {
-    constructor() : this("", "")
-}
+    @set:PropertyName("family_password")
+    var familyPassword: String = ""
+)

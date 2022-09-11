@@ -5,9 +5,9 @@ import android.location.Geocoder
 import android.media.AudioManager
 import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
+import app.family.api.apis.AuthApi
 import app.family.api.apis.DeviceApi
 import app.family.api.apis.FamilyApi
-import app.family.api.apis.FamilyStatusApi
 import app.family.api.apis.InviteApi
 import app.family.api.apis.LocalityApi
 import app.family.api.apis.LocationAPI
@@ -44,8 +44,8 @@ class APIModule {
 
     @Singleton
     @Provides
-    fun provideUserAPI(): UserApi {
-        return UserApi(FirebaseAuth.getInstance())
+    fun provideAuthAPI(): AuthApi {
+        return AuthApi(FirebaseAuth.getInstance())
     }
 
     @Singleton
@@ -54,7 +54,6 @@ class APIModule {
         return MyStatusApi(context.statusDataStore)
     }
 
-    @Singleton
     @Provides
     fun provideLocalityInfoProvider(@ApplicationContext context: Context): LocalityApi {
         return LocalityApi(Geocoder(context, Locale.getDefault()))
@@ -69,18 +68,18 @@ class APIModule {
     @Singleton
     @Provides
     fun provideFamilyApi(): FamilyApi {
-        return FamilyApi(Firebase.database)
+        return FamilyApi(Firebase.database.getReference("families"))
     }
 
     @Singleton
     @Provides
-    fun provideFamilyStatusApi(): FamilyStatusApi {
-        return FamilyStatusApi(Firebase.database)
+    fun provideUserApi(): UserApi {
+        return UserApi(Firebase.database.getReference("users"))
     }
 
     @Singleton
     @Provides
     fun provideInviteApi(): InviteApi {
-        return InviteApi(Firebase.database)
+        return InviteApi(Firebase.database.getReference("invitations"))
     }
 }

@@ -1,8 +1,12 @@
 package app.family.api.models
 
+import com.google.firebase.database.PropertyName
+
 data class LocationDto(
-    val lat: Double,
-    val lon: Double
-) {
-    constructor() : this(0.0, 0.0)
-}
+    @get:PropertyName("lat")
+    @set:PropertyName("lat")
+    var lat: Double = 0.0,
+    @get:PropertyName("lon")
+    @set:PropertyName("lon")
+    var lon: Double = 0.0
+)

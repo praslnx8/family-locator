@@ -4,9 +4,9 @@ import com.google.firebase.database.PropertyName
 
 data class UserStatusDto(
     @get:PropertyName("name")
-    val name: String,
+    @set:PropertyName("name")
+    var name: String = "",
     @get:PropertyName("status")
-    val statusDto: StatusDto
-) {
-    constructor() : this("", StatusDto())
-}
+    @set:PropertyName("status")
+    var statusDto: StatusDto = StatusDto()
+)

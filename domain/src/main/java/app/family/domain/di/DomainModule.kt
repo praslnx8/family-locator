@@ -1,18 +1,19 @@
 package app.family.domain.di
 
+import app.family.api.apis.AuthApi
 import app.family.api.apis.DeviceApi
 import app.family.api.apis.FamilyApi
-import app.family.api.apis.FamilyStatusApi
 import app.family.api.apis.InviteApi
 import app.family.api.apis.LocalityApi
 import app.family.api.apis.LocationAPI
 import app.family.api.apis.MyStatusApi
 import app.family.api.apis.UserApi
+import app.family.domain.usecases.FamilyCreateUseCase
 import app.family.domain.usecases.FamilyInviteUseCase
 import app.family.domain.usecases.LoginUseCase
 import app.family.domain.usecases.MyStatusSyncUseCase
-import app.family.domain.usecases.MyStatusUploadUseCase
 import app.family.domain.usecases.MyStatusUseCase
+import app.family.domain.usecases.UploadStatusUseCase
 import app.family.domain.usecases.UserUseCase
 import app.family.domain.utils.RandomPassCodeGenerator
 import dagger.Module
@@ -25,8 +26,8 @@ import dagger.hilt.components.SingletonComponent
 class DomainModule {
 
     @Provides
-    fun provideLoginUseCase(userApi: UserApi): LoginUseCase {
-        return LoginUseCase(userApi)
+    fun provideLoginUseCase(authApi: AuthApi): LoginUseCase {
+        return LoginUseCase(authApi)
     }
 
     @Provides
@@ -45,8 +46,18 @@ class DomainModule {
     }
 
     @Provides
-    fun provideUserUseCase(userApi: UserApi): UserUseCase {
-        return UserUseCase(userApi)
+    fun provideUserUseCase(authApi: AuthApi): UserUseCase {
+        return UserUseCase(authApi)
+    }
+
+    @Provides
+    fun familyCreateUseCase(
+        authApi: AuthApi,
+        userApi: UserApi,
+        familyApi: FamilyApi,
+        randomPassCodeGenerator: RandomPassCodeGenerator
+    ): FamilyCreateUseCase {
+        return FamilyCreateUseCase(authApi, userApi, familyApi, randomPassCodeGenerator)
     }
 
     @Provides
@@ -56,28 +67,33 @@ class DomainModule {
 
     @Provides
     fun provideMyStatusUploadUseCase(
-        userApi: UserApi,
+        authApi: AuthApi,
         myStatusApi: MyStatusApi,
         familyApi: FamilyApi,
-        familyStatusApi: FamilyStatusApi,
-        randomPassCodeGenerator: RandomPassCodeGenerator
-    ): MyStatusUploadUseCase {
-        return MyStatusUploadUseCase(
-            userApi = userApi,
+        familyCreateUseCase: FamilyCreateUseCase,
+    ): UploadStatusUseCase {
+        return UploadStatusUseCase(
+            authApi = authApi,
             statusApi = myStatusApi,
             familyApi = familyApi,
-            familyStatusApi = familyStatusApi,
-            randomPassCodeGenerator = randomPassCodeGenerator
+            familyCreateUseCase = familyCreateUseCase
         )
     }
 
     @Provides
     fun provideInviteFamilyUseCase(
+        authApi: AuthApi,
         userApi: UserApi,
-        familyApi: FamilyApi,
         inviteApi: InviteApi,
+        familyCreateUseCase: FamilyCreateUseCase,
         randomPassCodeGenerator: RandomPassCodeGenerator
     ): FamilyInviteUseCase {
-        return FamilyInviteUseCase(userApi, inviteApi, familyApi, randomPassCodeGenerator)
+        return FamilyInviteUseCase(
+            authApi,
+            userApi,
+            inviteApi,
+            familyCreateUseCase,
+            randomPassCodeGenerator
+        )
     }
 }

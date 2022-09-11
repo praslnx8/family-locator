@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import app.family.domain.usecases.MyStatusSyncUseCase
-import app.family.domain.usecases.MyStatusUploadUseCase
+import app.family.domain.usecases.UploadStatusUseCase
 import app.family.locator.utils.NotificationUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -22,7 +22,7 @@ class StatusSyncService : Service() {
     lateinit var myStatusSyncUseCase: MyStatusSyncUseCase
 
     @Inject
-    lateinit var myStatusUploadUseCase: MyStatusUploadUseCase
+    lateinit var uploadStatusUseCase: UploadStatusUseCase
 
     @Inject
     lateinit var notificationUtils: NotificationUtils
@@ -37,7 +37,7 @@ class StatusSyncService : Service() {
             myStatusSyncUseCase.listenAndSync().collect()
         }
         scope.launch {
-            myStatusUploadUseCase.uploadMyStatus().collect()
+            uploadStatusUseCase.uploadMyStatus().collect()
         }
 
         startForeground()

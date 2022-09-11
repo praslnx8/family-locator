@@ -2,6 +2,7 @@ package app.family.api.apis
 
 import android.location.Location
 import android.os.Looper
+import android.util.Log
 import app.family.api.models.LocationDto
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -34,7 +35,9 @@ class LocationAPI(
             override fun onLocationResult(locationResult: LocationResult) {
                 super.onLocationResult(locationResult)
 
+                Log.i("Location API", "On Location Result callback")
                 locationResult.lastLocation?.let { location ->
+                    Log.i("Location API", "Location Fetched")
                     trySend(convertToLocationDto(location))
                 }
             }
@@ -52,8 +55,10 @@ class LocationAPI(
     private fun fetchCurrentLocation(): Flow<Location?> = callbackFlow {
         locationProviderClient.lastLocation.addOnCompleteListener {
             if (it.isSuccessful) {
+                Log.i("Location API", "Last Location Fetched")
                 trySend(it.result)
             } else {
+                Log.e("Location API", "Error while fetching location " + it.exception?.message)
                 trySend(null)
             }
         }

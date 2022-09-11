@@ -1,8 +1,6 @@
 package app.family.api.models
 
 data class UserDto(
-    val id: String,
-    val name: String?
-) {
-    constructor() : this("", "")
-}
+    var id: String = "",
+    var name: String? = null
+)
