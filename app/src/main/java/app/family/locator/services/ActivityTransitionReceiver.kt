@@ -51,7 +51,13 @@ class ActivityTransitionReceiver : BroadcastReceiver() {
                 .requestActivityTransitionUpdates(
                     ActivityTransitionRequest(getActivityTransitionRequest()),
                     getPendingIntent(context)
-                )
+                ).addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        Log.i("Activity Recognition", "Success requesting")
+                    } else {
+                        Log.e("Activity Recognition", "Error requesting " + it.exception?.message)
+                    }
+                }
         }
 
         private fun getActivityTransitionRequest(): List<ActivityTransition> {

@@ -14,11 +14,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.hilt.navigation.compose.hiltViewModel
 import app.family.locator.ui.views.InvitationDialogView
+import app.family.presentation.vms.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    viewModel: HomeViewModel = hiltViewModel()
+) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val inviteClicked = rememberSaveable(Unit) { mutableStateOf(false) }
 
@@ -38,7 +42,12 @@ fun HomeScreen() {
         StatusListScreen()
         if (inviteClicked.value) {
             InvitationDialogView(
-                onDismiss = { inviteClicked.value = false },
+                onDismiss = {
+                    inviteClicked.value = false
+                },
+                onJoined = {
+                    viewModel.pushFamilyStatus()
+                }
             )
         }
     }

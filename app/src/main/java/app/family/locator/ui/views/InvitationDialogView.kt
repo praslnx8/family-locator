@@ -44,6 +44,7 @@ import app.family.presentation.vms.InvitationViewModel
 @Composable
 fun InvitationDialogView(
     onDismiss: () -> Unit,
+    onJoined: () -> Unit,
     viewModel: InvitationViewModel = hiltViewModel()
 ) {
     val invitationViewState = viewModel.invitationViewState.collectAsState()
@@ -56,6 +57,7 @@ fun InvitationDialogView(
     if (invitationViewState.value.isJoinedFamily) {
         viewModel.onExit()
         onDismiss()
+        onJoined()
     }
 
     Dialog(onDismissRequest = { onDismiss() }) {
@@ -218,5 +220,5 @@ fun InvitationDialogView(
 @Preview
 @Composable
 private fun PreviewInvitationDialog() {
-    InvitationDialogView({})
+    InvitationDialogView({},{})
 }
