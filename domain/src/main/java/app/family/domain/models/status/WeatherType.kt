@@ -1,6 +1,13 @@
 package app.family.domain.models.status
 
 enum class WeatherType {
+    CLEAR,
     WINDY,
-    RAINY
+    STORMY,
+    RAINY,
+    SNOWY,
+    ICY,
+    HAZY,
+    FOGGY,
+    CLOUDY
 }

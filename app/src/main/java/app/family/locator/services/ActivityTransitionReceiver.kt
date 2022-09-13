@@ -48,9 +48,8 @@ class ActivityTransitionReceiver : BroadcastReceiver() {
     companion object {
         fun requestForActivityDetection(context: Context) {
             ActivityRecognition.getClient(context)
-                .requestActivityUpdates(
-//                    ActivityTransitionRequest(getActivityTransitionRequest()),
-                    0L,
+                .requestActivityTransitionUpdates(
+                    ActivityTransitionRequest(getActivityTransitionRequest()),
                     getPendingIntent(context)
                 ).addOnCompleteListener {
                     if (it.isSuccessful) {
@@ -65,7 +64,7 @@ class ActivityTransitionReceiver : BroadcastReceiver() {
             return mutableListOf<ActivityTransition>().apply {
                 add(
                     ActivityTransition.Builder()
-                        .setActivityType(DetectedActivity.IN_VEHICLE)
+                        .setActivityType(DetectedActivity.STILL)
                         .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
                         .build()
                 )
