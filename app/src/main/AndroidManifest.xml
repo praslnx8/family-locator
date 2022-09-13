@@ -40,8 +40,7 @@
 
         <receiver
             android:name=".services.ActivityTransitionReceiver"
-            android:exported="false"
-            android:permission="com.google.android.gms.permission.ACTIVITY_RECOGNITION">
+            android:exported="false">
             <intent-filter>
                 <action android:name="action.TRANSITIONS_DATA" />
             </intent-filter>

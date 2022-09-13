@@ -22,8 +22,8 @@ class ActivityTransitionReceiver : BroadcastReceiver() {
     lateinit var myStatusSyncUseCase: MyStatusSyncUseCase
 
     override fun onReceive(context: Context?, intent: Intent?) {
+        Log.i("Activity Detection", "Detected Activity")
         if (ActivityTransitionResult.hasResult(intent)) {
-            Log.i("Activity Detection", "Detected Activity")
             val result = intent?.let { ActivityTransitionResult.extractResult(intent) }
             result?.let {
                 result.transitionEvents.forEach { event ->
@@ -48,8 +48,9 @@ class ActivityTransitionReceiver : BroadcastReceiver() {
     companion object {
         fun requestForActivityDetection(context: Context) {
             ActivityRecognition.getClient(context)
-                .requestActivityTransitionUpdates(
-                    ActivityTransitionRequest(getActivityTransitionRequest()),
+                .requestActivityUpdates(
+//                    ActivityTransitionRequest(getActivityTransitionRequest()),
+                    0L,
                     getPendingIntent(context)
                 ).addOnCompleteListener {
                     if (it.isSuccessful) {
@@ -93,7 +94,7 @@ class ActivityTransitionReceiver : BroadcastReceiver() {
             return PendingIntent.getBroadcast(
                 context,
                 1,
-                Intent(context, ActivityTransitionReceiver::class.java),
+                Intent("action.TRANSITIONS_DATA"),
                 PendingIntent.FLAG_IMMUTABLE
             )
         }

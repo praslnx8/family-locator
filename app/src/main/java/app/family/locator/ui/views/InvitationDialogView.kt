@@ -10,14 +10,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
+import androidx.compose.material.Button
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -40,7 +39,6 @@ import app.family.locator.utils.ShareUtils
 import app.family.locator.utils.dashedBorder
 import app.family.presentation.vms.InvitationViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InvitationDialogView(
     onDismiss: () -> Unit,
@@ -63,7 +61,7 @@ fun InvitationDialogView(
     Dialog(onDismissRequest = { onDismiss() }) {
         ConstraintLayout(
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.background)
+                .background(MaterialTheme.colors.background)
                 .padding(
                     dimensionResource(id = R.dimen.default_padding)
                 )
@@ -73,7 +71,7 @@ fun InvitationDialogView(
 
             Text(
                 text = "Invite your Family",
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.h3,
                 modifier = Modifier.constrainAs(inviteHeading) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
@@ -84,7 +82,7 @@ fun InvitationDialogView(
                 .padding(dimensionResource(id = R.dimen.default_padding))
                 .dashedBorder(
                     2.dp,
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = MaterialTheme.colors.onBackground,
                     shape = MaterialTheme.shapes.medium,
                     on = 4.dp,
                     off = 4.dp
@@ -99,7 +97,7 @@ fun InvitationDialogView(
                 } else {
                     Text(
                         text = invitationViewState.value.inviteKey,
-                        style = MaterialTheme.typography.displayMedium,
+                        style = MaterialTheme.typography.subtitle2,
                         modifier = Modifier.padding(dimensionResource(id = R.dimen.default_padding))
                     )
                 }
@@ -119,7 +117,7 @@ fun InvitationDialogView(
                         end.linkTo(parent.end)
                     }
             ) {
-                Text(text = "Share", style = MaterialTheme.typography.labelLarge)
+                Text(text = "Share", style = MaterialTheme.typography.body2)
             }
             Row(
                 modifier = Modifier.constrainAs(dividerLayout) {
@@ -131,20 +129,20 @@ fun InvitationDialogView(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Divider(
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = MaterialTheme.colors.onBackground,
                     modifier = Modifier
                         .height(1.dp)
                         .weight(1f)
                 )
                 Text(
                     text = "OR",
-                    style = MaterialTheme.typography.titleSmall,
+                    style = MaterialTheme.typography.subtitle1,
                     modifier = Modifier.padding(
                         dimensionResource(id = R.dimen.default_padding)
                     )
                 )
                 Divider(
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = MaterialTheme.colors.onBackground,
                     modifier = Modifier
                         .height(1.dp)
                         .weight(1f)
@@ -152,7 +150,7 @@ fun InvitationDialogView(
             }
             Text(
                 text = "Join with Invite Link",
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.h2,
                 modifier = Modifier.constrainAs(joinHeading) {
                     top.linkTo(dividerLayout.bottom)
                     start.linkTo(parent.start)
@@ -199,7 +197,7 @@ fun InvitationDialogView(
                     end.linkTo(parent.end)
                 })
             } else {
-                FilledTonalButton(
+                Button(
                     onClick = { viewModel.joinFamily(inviteKeyState.value) },
                     enabled = inviteKeyState.value.isNotBlank(),
                     modifier = Modifier
@@ -210,7 +208,7 @@ fun InvitationDialogView(
                             end.linkTo(parent.end)
                         }
                 ) {
-                    Text(text = "Join", style = MaterialTheme.typography.labelLarge)
+                    Text(text = "Join", style = MaterialTheme.typography.body2)
                 }
             }
         }
@@ -220,5 +218,5 @@ fun InvitationDialogView(
 @Preview
 @Composable
 private fun PreviewInvitationDialog() {
-    InvitationDialogView({},{})
+    InvitationDialogView({}, {})
 }

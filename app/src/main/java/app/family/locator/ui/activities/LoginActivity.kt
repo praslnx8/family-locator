@@ -6,8 +6,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import app.family.locator.ui.nav.LoginNavigation
 import app.family.locator.ui.theme.FamilyLocatorTheme
@@ -26,7 +26,7 @@ class LoginActivity : ComponentActivity() {
             FamilyLocatorTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = MaterialTheme.colors.background
                 ) {
                     LoginNavigation {
                         requestPermissions(
