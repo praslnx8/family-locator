@@ -29,7 +29,7 @@ fun HomeScreen(
                 Icon(imageVector = Icons.Filled.Add, contentDescription = "Invite Family Member")
             }
         },
-        floatingActionButtonPosition = FabPosition.End,
+        floatingActionButtonPosition = FabPosition.End
     ) {
         StatusListScreen()
         if (inviteClicked.value) {

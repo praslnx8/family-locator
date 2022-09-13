@@ -1,5 +1,6 @@
 package app.family.locator.ui
 
+import android.text.format.DateUtils
 import androidx.annotation.DrawableRes
 import app.family.domain.models.status.WeatherType
 import app.family.domain.models.status.WeatherType.CLEAR
@@ -12,6 +13,7 @@ import app.family.domain.models.status.WeatherType.SNOWY
 import app.family.domain.models.status.WeatherType.STORMY
 import app.family.domain.models.status.WeatherType.WINDY
 import app.family.locator.R
+import java.util.concurrent.TimeUnit
 
 object UIUtils {
 
@@ -28,5 +30,13 @@ object UIUtils {
             FOGGY -> if (isNight) R.drawable.ic_foggy_night else R.drawable.ic_foggy_day
             CLOUDY -> if (isNight) R.drawable.ic_cloudy_night else R.drawable.ic_cloudy_day
         }
+    }
+
+    fun getRelativeTime(time: Long): String {
+        if (System.currentTimeMillis() - time < TimeUnit.MINUTES.toMillis(2)) {
+            return "Now"
+        }
+        return DateUtils.getRelativeTimeSpanString(time)
+            .toString()
     }
 }

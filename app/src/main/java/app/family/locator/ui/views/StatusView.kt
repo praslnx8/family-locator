@@ -1,6 +1,7 @@
 package app.family.locator.ui.views
 
-import android.text.format.DateUtils
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +12,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
@@ -40,13 +42,33 @@ fun StatusView(statusState: StatusState) {
                 .padding(dimensionResource(R.dimen.default_padding))
                 .fillMaxWidth()
         ) {
-            val (statusLayout, deviceLayout) = createRefs()
+            val (avatarView, statusLayout, deviceLayout) = createRefs()
 
-            Column(modifier = Modifier.constrainAs(statusLayout) {
-                start.linkTo(parent.start)
-                top.linkTo(parent.top)
-                bottom.linkTo(parent.bottom)
-            }) {
+            AvatarView(
+                name = statusState.name,
+                modifier = Modifier
+                    .constrainAs(avatarView) {
+                        start.linkTo(parent.start)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                    }
+                    .padding(
+                        start = dimensionResource(id = R.dimen.small_padding),
+                        end = dimensionResource(id = R.dimen.small_padding)
+                    ),
+            )
+
+            Column(
+                modifier = Modifier
+                    .constrainAs(statusLayout) {
+                        start.linkTo(avatarView.end)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                    }
+                    .padding(start = dimensionResource(id = R.dimen.default_padding)),
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.Center
+            ) {
                 Row {
                     Text(
                         text = statusState.name,
@@ -77,12 +99,10 @@ fun StatusView(statusState: StatusState) {
                     )
                 }
                 Text(
-                    text = DateUtils.getRelativeTimeSpanString(statusState.getStatusTime())
-                        .toString(),
+                    text = UIUtils.getRelativeTime(statusState.getStatusTime()),
                     style = MaterialTheme.typography.caption
                 )
             }
-
 
             Column(modifier = Modifier.constrainAs(deviceLayout) {
                 top.linkTo(parent.top)
@@ -126,7 +146,7 @@ fun StatusView(statusState: StatusState) {
 private fun PreviewStatusView() {
     StatusView(
         statusState = StatusState(
-            name = "Prasi",
+            name = "Bala K",
             activityType = ActivityType.WALKING,
             activityTime = System.currentTimeMillis(),
             locality = "Chennai",
