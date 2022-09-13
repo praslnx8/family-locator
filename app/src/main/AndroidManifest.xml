@@ -38,14 +38,6 @@
             android:name=".services.StatusSyncService"
             android:foregroundServiceType="location" />
 
-        <receiver
-            android:name=".services.ActivityTransitionReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="action.TRANSITIONS_DATA" />
-            </intent-filter>
-        </receiver>
-
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"

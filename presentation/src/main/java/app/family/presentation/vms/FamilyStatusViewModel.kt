@@ -24,6 +24,8 @@ class FamilyStatusViewModel @Inject constructor(
                     locationTime = userStatus.status.locationStatus?.time,
                     isPhoneSilent = userStatus.status.deviceStatus.isPhoneSilent,
                     batteryPercentage = userStatus.status.deviceStatus.batteryPercentage,
+                    weatherType = userStatus.status.weatherStatus?.weatherType,
+                    weatherTime = userStatus.status.weatherStatus?.time,
                     time = userStatus.status.time
                 )
             }

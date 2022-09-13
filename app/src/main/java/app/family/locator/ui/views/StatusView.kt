@@ -1,6 +1,5 @@
 package app.family.locator.ui.views
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -104,11 +103,15 @@ fun StatusView(statusState: StatusState) {
                 )
             }
 
-            Column(modifier = Modifier.constrainAs(deviceLayout) {
-                top.linkTo(parent.top)
-                end.linkTo(parent.end)
-                bottom.linkTo(parent.bottom)
-            }) {
+            Column(
+                modifier = Modifier.constrainAs(deviceLayout) {
+                    top.linkTo(parent.top)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(parent.bottom)
+                },
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 if (statusState.isWeatherValid()) {
                     Icon(
                         painter = painterResource(

@@ -56,6 +56,7 @@ class MyStatusApi(
         statusDataStore.updateData { oldData ->
             oldData.toBuilder()
                 .setActivity(activity)
+                .setActivityTime(time)
                 .setUpdateTime(time)
                 .build()
         }

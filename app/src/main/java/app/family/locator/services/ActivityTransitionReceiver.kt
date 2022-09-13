@@ -7,12 +7,13 @@ import android.content.Intent
 import android.util.Log
 import app.family.domain.models.status.ActivityType
 import app.family.domain.usecases.MyStatusSyncUseCase
-import com.google.android.gms.location.ActivityRecognition
-import com.google.android.gms.location.ActivityTransition
-import com.google.android.gms.location.ActivityTransitionRequest
-import com.google.android.gms.location.ActivityTransitionResult
+import com.google.android.gms.location.ActivityRecognitionResult
 import com.google.android.gms.location.DetectedActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -21,80 +22,37 @@ class ActivityTransitionReceiver : BroadcastReceiver() {
     @Inject
     lateinit var myStatusSyncUseCase: MyStatusSyncUseCase
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onReceive(context: Context?, intent: Intent?) {
         Log.i("Activity Detection", "Detected Activity")
-        if (intent != null && ActivityTransitionResult.hasResult(intent)) {
-            val result = intent.let { ActivityTransitionResult.extractResult(intent) }
-            result?.let {
-                result.transitionEvents.forEach { event ->
-                    Log.i("Activity Detection", "Detected Activity " + event.activityType)
-                    if (event.transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
-                        val activityType = when (event.activityType) {
-                            DetectedActivity.ON_FOOT -> ActivityType.WALKING
-                            DetectedActivity.ON_BICYCLE -> ActivityType.DRIVING
-                            DetectedActivity.IN_VEHICLE -> ActivityType.DRIVING
-                            DetectedActivity.RUNNING -> ActivityType.RUNNING
-                            else -> null
-                        }
-                        if (activityType != null) {
-                            myStatusSyncUseCase.syncActivityDetection(activityType)
-                        }
-                    }
+        if (intent != null && ActivityRecognitionResult.hasResult(intent)) {
+            val result = ActivityRecognitionResult.extractResult(intent)
+            val activityType = when (result?.mostProbableActivity?.type ?: 0) {
+                DetectedActivity.ON_FOOT -> ActivityType.WALKING
+                DetectedActivity.ON_BICYCLE -> ActivityType.DRIVING
+                DetectedActivity.IN_VEHICLE -> ActivityType.DRIVING
+                DetectedActivity.RUNNING -> ActivityType.RUNNING
+                else -> null
+            }
+            if (activityType != null) {
+                Log.i("Activity Detection", "Detected Activity $activityType")
+                GlobalScope.launch {
+                    myStatusSyncUseCase.syncActivityDetection(activityType).collect()
                 }
             }
         }
     }
 
     companion object {
-        fun requestForActivityDetection(context: Context) {
-            ActivityRecognition.getClient(context)
-                .requestActivityTransitionUpdates(
-                    ActivityTransitionRequest(getActivityTransitionRequest()),
-                    getPendingIntent(context)
-                ).addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        Log.i("Activity Recognition", "Success requesting")
-                    } else {
-                        Log.e("Activity Recognition", "Error requesting " + it.exception?.message)
-                    }
-                }
-        }
 
-        private fun getActivityTransitionRequest(): List<ActivityTransition> {
-            return mutableListOf<ActivityTransition>().apply {
-                add(
-                    ActivityTransition.Builder()
-                        .setActivityType(DetectedActivity.STILL)
-                        .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                        .build()
-                )
-                add(
-                    ActivityTransition.Builder()
-                        .setActivityType(DetectedActivity.WALKING)
-                        .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                        .build()
-                )
-                add(
-                    ActivityTransition.Builder()
-                        .setActivityType(DetectedActivity.RUNNING)
-                        .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                        .build()
-                )
-                add(
-                    ActivityTransition.Builder()
-                        .setActivityType(DetectedActivity.ON_BICYCLE)
-                        .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                        .build()
-                )
-            }
-        }
+        const val INTENT_ACTION = "action.activity_detection"
 
-        private fun getPendingIntent(context: Context): PendingIntent {
+        fun getPendingIntent(context: Context): PendingIntent {
             return PendingIntent.getBroadcast(
                 context,
-                1,
-                Intent("action.TRANSITIONS_DATA"),
-                PendingIntent.FLAG_IMMUTABLE
+                111,
+                Intent(INTENT_ACTION),
+                PendingIntent.FLAG_MUTABLE
             )
         }
     }

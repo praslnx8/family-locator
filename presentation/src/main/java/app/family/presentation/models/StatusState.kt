@@ -18,10 +18,10 @@ data class StatusState(
 ) {
     fun isActivityValid() =
         activityType != null && (System.currentTimeMillis() - (activityTime
-            ?: 0)) < TimeUnit.HOURS.toMillis(1)
+            ?: 0)) < TimeUnit.MINUTES.toMillis(30)
 
     fun isActivityInPast() =
-        (System.currentTimeMillis() - (activityTime ?: 0)) > TimeUnit.MINUTES.toMillis(20)
+        (System.currentTimeMillis() - (activityTime ?: 0)) > TimeUnit.MINUTES.toMillis(10)
 
     fun isLocalityValid() =
         locality.isNullOrBlank().not() && (System.currentTimeMillis() - (locationTime

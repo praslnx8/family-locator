@@ -23,13 +23,13 @@ class StatusMapper {
 
     private fun getWeatherStatus(statusDto: StatusDto): WeatherStatus? {
         if (statusDto.weatherType != null) {
-            val weatherType = when (statusDto.weatherType) {
-                200 - 299 -> WeatherType.STORMY
-                300 - 599 -> WeatherType.RAINY
-                600 - 699 -> WeatherType.SNOWY
-                700 - 799 -> WeatherType.FOGGY
+            val weatherType = when (statusDto.weatherType?:0) {
+                in 200..299 -> WeatherType.STORMY
+                in 300..599 -> WeatherType.RAINY
+                in 600..699 -> WeatherType.SNOWY
+                in 700..799 -> WeatherType.FOGGY
                 800 -> WeatherType.CLEAR
-                801 - 899 -> WeatherType.CLOUDY
+                in 801..899 -> WeatherType.CLOUDY
                 else -> WeatherType.CLEAR
             }
             return WeatherStatus(
