@@ -28,7 +28,7 @@ class MyStatusApi(
         emit(Unit)
     }
 
-    fun updateWeather(temperature: Double, weatherType: String, time: Long): Flow<Unit> = flow {
+    fun updateWeather(temperature: Double, weatherType: Int, time: Long): Flow<Unit> = flow {
         statusDataStore.updateData { oldData ->
             oldData.toBuilder()
                 .setTemperature(temperature)
@@ -69,7 +69,7 @@ class MyStatusApi(
             locality = statusProto.locality.ifBlank { null },
             locationTime = if (statusProto.locationTime != 0L) statusProto.locationTime else null,
             temperature = if (statusProto.temperature != 0.0) statusProto.temperature else null,
-            weatherType = statusProto.weatherType.ifBlank { null },
+            weatherType = statusProto.weatherType,
             weatherTime = if (statusProto.weatherTime != 0L) statusProto.weatherTime else null,
             activityType = statusProto.activity.ifBlank { null },
             isOnline = statusProto.isOnline,

@@ -25,6 +25,8 @@ class MyStatusViewModel @Inject constructor(
                 locationTime = status.locationStatus?.time,
                 isPhoneSilent = status.deviceStatus.isPhoneSilent,
                 batteryPercentage = status.deviceStatus.batteryPercentage,
+                weatherType = status.weatherStatus?.weatherType,
+                weatherTime = status.weatherStatus?.time,
                 time = status.time
             )
         }

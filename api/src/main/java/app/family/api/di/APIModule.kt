@@ -28,6 +28,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 import javax.inject.Singleton
 
@@ -92,6 +93,7 @@ class APIModule {
     fun provideWeatherApi(): WeatherApi {
         val weatherApiClient = Retrofit.Builder()
             .baseUrl(BuildConfig.WEATHER_URL)
+            .addConverterFactory(GsonConverterFactory.create())
             .build()
         return WeatherApi(weatherApiClient.create(WeatherApiClient::class.java))
     }

@@ -8,6 +8,7 @@ import app.family.api.apis.LocalityApi
 import app.family.api.apis.LocationAPI
 import app.family.api.apis.MyStatusApi
 import app.family.api.apis.UserApi
+import app.family.api.apis.WeatherApi
 import app.family.domain.mappers.StatusMapper
 import app.family.domain.mappers.UserStatusMapper
 import app.family.domain.usecases.FamilyCreateUseCase
@@ -48,9 +49,10 @@ class DomainModule {
         locationAPI: LocationAPI,
         localityApi: LocalityApi,
         myStatusApi: MyStatusApi,
-        deviceApi: DeviceApi
+        deviceApi: DeviceApi,
+        weatherApi: WeatherApi
     ): MyStatusSyncUseCase {
-        return MyStatusSyncUseCase(locationAPI, localityApi, myStatusApi, deviceApi)
+        return MyStatusSyncUseCase(locationAPI, localityApi, myStatusApi, deviceApi, weatherApi)
     }
 
     @Provides

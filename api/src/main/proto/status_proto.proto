@@ -12,7 +12,7 @@ message StatusProto {
 
   //Weather
   double temperature = 5;
-  string weather_type = 6;
+  int32 weather_type = 6;
   int64 weather_time = 7;
 
   //Activity

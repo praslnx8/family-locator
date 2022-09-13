@@ -23,8 +23,8 @@ class ActivityTransitionReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
         Log.i("Activity Detection", "Detected Activity")
-        if (ActivityTransitionResult.hasResult(intent)) {
-            val result = intent?.let { ActivityTransitionResult.extractResult(intent) }
+        if (intent != null && ActivityTransitionResult.hasResult(intent)) {
+            val result = intent.let { ActivityTransitionResult.extractResult(intent) }
             result?.let {
                 result.transitionEvents.forEach { event ->
                     Log.i("Activity Detection", "Detected Activity " + event.activityType)

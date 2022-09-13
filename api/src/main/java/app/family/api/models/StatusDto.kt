@@ -23,7 +23,7 @@ data class StatusDto(
     var temperature: Double? = null,
     @get:PropertyName("weather_type")
     @set:PropertyName("weather_type")
-    var weatherType: String? = null,
+    var weatherType: Int? = null,
     @get:PropertyName("weather_time")
     @set:PropertyName("weather_time")
     var weatherTime: Long? = null,

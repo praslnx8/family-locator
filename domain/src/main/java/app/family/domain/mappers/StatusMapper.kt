@@ -6,6 +6,8 @@ import app.family.domain.models.status.ActivityType
 import app.family.domain.models.status.DeviceStatus
 import app.family.domain.models.status.LocationStatus
 import app.family.domain.models.status.Status
+import app.family.domain.models.status.WeatherStatus
+import app.family.domain.models.status.WeatherType
 
 class StatusMapper {
 
@@ -13,19 +15,40 @@ class StatusMapper {
         return Status(
             locationStatus = getLocationStatus(statusDto),
             deviceStatus = getDeviceStatus(statusDto),
-            weatherStatus = null,
+            weatherStatus = getWeatherStatus(statusDto),
             activityStatus = getActivityStatus(statusDto),
             time = statusDto.updateTime
         )
     }
 
+    private fun getWeatherStatus(statusDto: StatusDto): WeatherStatus? {
+        if (statusDto.weatherType != null) {
+            val weatherType = when (statusDto.weatherType) {
+                200 - 299 -> WeatherType.STORMY
+                300 - 599 -> WeatherType.RAINY
+                600 - 699 -> WeatherType.SNOWY
+                700 - 799 -> WeatherType.FOGGY
+                800 -> WeatherType.CLEAR
+                801 - 899 -> WeatherType.CLOUDY
+                else -> WeatherType.CLEAR
+            }
+            return WeatherStatus(
+                weatherType = weatherType,
+                temperature = statusDto.temperature ?: 0.0,
+                time = statusDto.weatherTime ?: 0L
+            )
+        }
+
+        return null
+    }
+
     private fun getLocationStatus(statusDto: StatusDto): LocationStatus? {
         if (statusDto.locality.isNullOrBlank().not()) {
             return LocationStatus(
-                locality = statusDto.locality?:"",
-                lat = statusDto.lat?:0.0,
-                lon = statusDto.lon?:0.0,
-                time = statusDto.locationTime?:0L
+                locality = statusDto.locality ?: "",
+                lat = statusDto.lat ?: 0.0,
+                lon = statusDto.lon ?: 0.0,
+                time = statusDto.locationTime ?: 0L
             )
         }
         return null
@@ -42,8 +65,8 @@ class StatusMapper {
     private fun getActivityStatus(statusDto: StatusDto): ActivityStatus? {
         if (statusDto.activityType.isNullOrBlank().not()) {
             return ActivityStatus(
-                type = ActivityType.valueOf(statusDto.activityType?:""),
-                time = statusDto.activityTime?:0L
+                type = ActivityType.valueOf(statusDto.activityType ?: ""),
+                time = statusDto.activityTime ?: 0L
             )
         }
 

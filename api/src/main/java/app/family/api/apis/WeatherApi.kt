@@ -1,5 +1,6 @@
 package app.family.api.apis
 
+import android.util.Log
 import app.family.api.BuildConfig
 import app.family.api.models.WeatherDto
 import app.family.api.network.WeatherApiClient
@@ -16,10 +17,12 @@ class WeatherApi(private val weatherApiClient: WeatherApiClient) {
         weatherApiClient.getWeather(lat, lon, BuildConfig.WEATHER_TOKEN)
             .enqueue(object : Callback<WeatherDto> {
                 override fun onResponse(call: Call<WeatherDto>, response: Response<WeatherDto>) {
+                    Log.i("Weather API", "Success Fetching weather")
                     trySend(response.body())
                 }
 
                 override fun onFailure(call: Call<WeatherDto>, t: Throwable) {
+                    Log.e("Weather API", "Error Fetching weather " + t.message)
                     trySend(null)
                 }
             })

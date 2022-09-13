@@ -9,8 +9,8 @@ data class WeatherDto(
         return main.temp
     }
 
-    fun getWeather(): String {
-        return weather.firstOrNull()?.main ?: ""
+    fun getWeather(): Int {
+        return weather.firstOrNull()?.id ?: 0
     }
 
     data class Main(
@@ -18,6 +18,6 @@ data class WeatherDto(
     )
 
     data class Weather(
-        val main: String
+        val id: Int
     )
 }
