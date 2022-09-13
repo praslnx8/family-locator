@@ -1,4 +1,4 @@
-package app.family.locator.ui.screens
+package app.family.locator.ui.screens.status
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.rememberScrollState
@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 @Composable
 fun StatusListScreen() {
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-        MyStatusScreen()
-        FamilyStatusScreen()
+        MyStatusView()
+        FamilyStatusView()
     }
 }

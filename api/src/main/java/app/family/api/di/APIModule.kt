@@ -20,6 +20,7 @@ import app.family.api.network.WeatherApiClient
 import app.family.api.proto.StatusProtoSerializer
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import dagger.Module
@@ -40,6 +41,14 @@ private val Context.statusDataStore: DataStore<StatusProto> by dataStore(
 @InstallIn(SingletonComponent::class)
 @Module
 class APIModule {
+
+    @Singleton
+    @Provides
+    fun provideFirebaseDatabase(): FirebaseDatabase {
+        val database = Firebase.database
+        database.setPersistenceEnabled(true)
+        return database
+    }
 
     @Singleton
     @Provides
@@ -72,20 +81,20 @@ class APIModule {
 
     @Singleton
     @Provides
-    fun provideFamilyApi(): FamilyApi {
-        return FamilyApi(Firebase.database.getReference("families"))
+    fun provideFamilyApi(database: FirebaseDatabase): FamilyApi {
+        return FamilyApi(database.getReference("families"))
     }
 
     @Singleton
     @Provides
-    fun provideUserApi(): UserApi {
-        return UserApi(Firebase.database.getReference("users"))
+    fun provideUserApi(database: FirebaseDatabase): UserApi {
+        return UserApi(database.getReference("users"))
     }
 
     @Singleton
     @Provides
-    fun provideInviteApi(): InviteApi {
-        return InviteApi(Firebase.database.getReference("invitations"))
+    fun provideInviteApi(database: FirebaseDatabase): InviteApi {
+        return InviteApi(database.getReference("invitations"))
     }
 
     @Singleton

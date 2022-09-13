@@ -10,6 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.rememberNavController
+import app.family.locator.ui.screens.home.HomeBottomNavigation
+import app.family.locator.ui.screens.home.HomeNavigationView
 import app.family.locator.ui.views.InvitationDialogView
 import app.family.presentation.vms.HomeViewModel
 
@@ -18,8 +21,12 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val inviteClicked = rememberSaveable(Unit) { mutableStateOf(false) }
+    val navController = rememberNavController()
 
     Scaffold(
+        bottomBar = {
+            HomeBottomNavigation(navController)
+        },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
@@ -31,7 +38,7 @@ fun HomeScreen(
         },
         floatingActionButtonPosition = FabPosition.End
     ) {
-        StatusListScreen()
+        HomeNavigationView(navController = navController)
         if (inviteClicked.value) {
             InvitationDialogView(
                 onDismiss = {

@@ -9,4 +9,7 @@
     <string name="grant_permission_button">Grant Permission</string>
     <string name="login">Login</string>
     <string name="add_nick_name">Add your Nick Name</string>
+    <string name="home">Home</string>
+    <string name="chat">Chat</string>
+    <string name="profile">Profile</string>
 </resources>

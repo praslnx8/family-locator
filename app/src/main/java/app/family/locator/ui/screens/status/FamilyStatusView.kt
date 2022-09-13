@@ -1,4 +1,4 @@
-package app.family.locator.ui.screens
+package app.family.locator.ui.screens.status
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
@@ -13,7 +13,7 @@ import app.family.locator.ui.views.StatusView
 import app.family.presentation.vms.FamilyStatusViewModel
 
 @Composable
-fun FamilyStatusScreen(viewModel: FamilyStatusViewModel = hiltViewModel()) {
+fun FamilyStatusView(viewModel: FamilyStatusViewModel = hiltViewModel()) {
     val statusListState = viewModel.getFamilyStatuses().collectAsState(initial = emptyList())
     Column {
         Divider(
