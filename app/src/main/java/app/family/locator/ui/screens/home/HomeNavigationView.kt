@@ -1,6 +1,7 @@
 package app.family.locator.ui.screens.home
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -9,8 +10,8 @@ import app.family.locator.ui.screens.profile.ProfileScreen
 import app.family.locator.ui.screens.status.StatusListScreen
 
 @Composable
-fun HomeNavigationView(navController: NavHostController) {
-    NavHost(navController, startDestination = BottomNavItem.Home.route) {
+fun HomeNavigationView(navController: NavHostController, modifier: Modifier = Modifier) {
+    NavHost(navController, startDestination = BottomNavItem.Home.route, modifier = modifier) {
         composable(BottomNavItem.Home.route) {
             StatusListScreen()
         }

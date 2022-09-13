@@ -7,6 +7,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
 import app.family.api.BuildConfig
 import app.family.api.apis.AuthApi
+import app.family.api.apis.MessageApi
 import app.family.api.apis.DeviceApi
 import app.family.api.apis.FamilyApi
 import app.family.api.apis.InviteApi
@@ -105,5 +106,11 @@ class APIModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         return WeatherApi(weatherApiClient.create(WeatherApiClient::class.java))
+    }
+
+    @Singleton
+    @Provides
+    fun provideChatApi(database: FirebaseDatabase): MessageApi {
+        return MessageApi(database.getReference("families"))
     }
 }

@@ -6,15 +6,18 @@ import app.family.api.apis.FamilyApi
 import app.family.api.apis.InviteApi
 import app.family.api.apis.LocalityApi
 import app.family.api.apis.LocationAPI
+import app.family.api.apis.MessageApi
 import app.family.api.apis.MyStatusApi
 import app.family.api.apis.UserApi
 import app.family.api.apis.WeatherApi
+import app.family.domain.mappers.MessageMapper
 import app.family.domain.mappers.StatusMapper
 import app.family.domain.mappers.UserStatusMapper
 import app.family.domain.usecases.FamilyCreateUseCase
 import app.family.domain.usecases.FamilyInviteUseCase
 import app.family.domain.usecases.FetchFamilyStatusUseCase
 import app.family.domain.usecases.LoginUseCase
+import app.family.domain.usecases.MessageUseCase
 import app.family.domain.usecases.MyStatusSyncUseCase
 import app.family.domain.usecases.MyStatusUseCase
 import app.family.domain.usecases.UploadStatusUseCase
@@ -42,6 +45,11 @@ class DomainModule {
     @Provides
     fun provideUserStatusMapper(statusMapper: StatusMapper): UserStatusMapper {
         return UserStatusMapper(statusMapper)
+    }
+
+    @Provides
+    fun provideMessageMapper(): MessageMapper {
+        return MessageMapper()
     }
 
     @Provides
@@ -123,5 +131,15 @@ class DomainModule {
         userStatusMapper: UserStatusMapper
     ): FetchFamilyStatusUseCase {
         return FetchFamilyStatusUseCase(authApi, userApi, familyApi, userStatusMapper)
+    }
+
+    @Provides
+    fun provideMessageUseCase(
+        authApi: AuthApi,
+        userApi: UserApi,
+        messageApi: MessageApi,
+        messageMapper: MessageMapper
+    ): MessageUseCase {
+        return MessageUseCase(authApi, userApi, messageApi, messageMapper)
     }
 }

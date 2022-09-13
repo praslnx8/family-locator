@@ -19,7 +19,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
 import app.family.domain.models.status.ActivityType
 import app.family.domain.models.status.WeatherType
 import app.family.locator.R
@@ -36,21 +35,16 @@ fun StatusView(statusState: StatusState) {
             .fillMaxWidth()
     ) {
 
-        ConstraintLayout(
+        Row(
             modifier = Modifier
                 .padding(dimensionResource(R.dimen.default_padding))
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            val (avatarView, statusLayout, deviceLayout) = createRefs()
 
             AvatarView(
                 name = statusState.name,
                 modifier = Modifier
-                    .constrainAs(avatarView) {
-                        start.linkTo(parent.start)
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
-                    }
                     .padding(
                         start = dimensionResource(id = R.dimen.small_padding),
                         end = dimensionResource(id = R.dimen.small_padding)
@@ -59,12 +53,8 @@ fun StatusView(statusState: StatusState) {
 
             Column(
                 modifier = Modifier
-                    .constrainAs(statusLayout) {
-                        start.linkTo(avatarView.end)
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
-                    }
-                    .padding(start = dimensionResource(id = R.dimen.default_padding)),
+                    .padding(start = dimensionResource(id = R.dimen.default_padding))
+                    .weight(1f),
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -104,11 +94,6 @@ fun StatusView(statusState: StatusState) {
             }
 
             Column(
-                modifier = Modifier.constrainAs(deviceLayout) {
-                    top.linkTo(parent.top)
-                    end.linkTo(parent.end)
-                    bottom.linkTo(parent.bottom)
-                },
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

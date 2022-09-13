@@ -8,7 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import app.family.locator.ui.route.ScreenRoute
-import app.family.locator.ui.screens.HomeScreen
+import app.family.locator.ui.screens.home.HomeScreen
 import app.family.locator.ui.screens.UserDetailScreen
 
 @Composable
