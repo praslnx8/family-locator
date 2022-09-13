@@ -38,6 +38,7 @@ import app.family.locator.R
 import app.family.locator.utils.ShareUtils
 import app.family.locator.utils.dashedBorder
 import app.family.presentation.vms.InvitationViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 @Composable
 fun InvitationDialogView(
@@ -71,7 +72,7 @@ fun InvitationDialogView(
 
             Text(
                 text = "Invite your Family",
-                style = MaterialTheme.typography.h3,
+                style = MaterialTheme.typography.subtitle1,
                 modifier = Modifier.constrainAs(inviteHeading) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
@@ -150,7 +151,7 @@ fun InvitationDialogView(
             }
             Text(
                 text = "Join with Invite Link",
-                style = MaterialTheme.typography.h2,
+                style = MaterialTheme.typography.subtitle1,
                 modifier = Modifier.constrainAs(joinHeading) {
                     top.linkTo(dividerLayout.bottom)
                     start.linkTo(parent.start)

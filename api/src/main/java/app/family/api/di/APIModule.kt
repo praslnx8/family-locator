@@ -5,6 +5,7 @@ import android.location.Geocoder
 import android.media.AudioManager
 import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
+import app.family.api.BuildConfig
 import app.family.api.apis.AuthApi
 import app.family.api.apis.DeviceApi
 import app.family.api.apis.FamilyApi
@@ -13,7 +14,9 @@ import app.family.api.apis.LocalityApi
 import app.family.api.apis.LocationAPI
 import app.family.api.apis.MyStatusApi
 import app.family.api.apis.UserApi
+import app.family.api.apis.WeatherApi
 import app.family.api.models.StatusProto
+import app.family.api.network.WeatherApiClient
 import app.family.api.proto.StatusProtoSerializer
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
@@ -24,6 +27,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import retrofit2.Retrofit
 import java.util.*
 import javax.inject.Singleton
 
@@ -81,5 +85,14 @@ class APIModule {
     @Provides
     fun provideInviteApi(): InviteApi {
         return InviteApi(Firebase.database.getReference("invitations"))
+    }
+
+    @Singleton
+    @Provides
+    fun provideWeatherApi(): WeatherApi {
+        val weatherApiClient = Retrofit.Builder()
+            .baseUrl(BuildConfig.WEATHER_URL)
+            .build()
+        return WeatherApi(weatherApiClient.create(WeatherApiClient::class.java))
     }
 }

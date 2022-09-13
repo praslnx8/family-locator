@@ -118,3 +118,4 @@ lint/tmp/
 hs_err_pid*
 
 /api/google-services.json
+/app.properties

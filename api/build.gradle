@@ -7,6 +7,8 @@ plugins {
     id "com.google.protobuf" version "0.8.17"
 }
 
+def propertiesFile = project.rootProject.file('app.properties')
+
 android {
     compileSdk rootProject.ext.target_sdk
 
@@ -14,6 +16,14 @@ android {
         minSdk rootProject.ext.min_sdk
         targetSdk rootProject.ext.target_sdk
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        Properties properties = new Properties()
+        if (propertiesFile.exists()) {
+            properties.load(propertiesFile.newDataInputStream())
+        }
+
+        buildConfigField "String", "WEATHER_URL", properties.getProperty("WEATHER_URL", "")
+        buildConfigField "String", "WEATHER_TOKEN", properties.getProperty("WEATHER_TOKEN", "")
     }
 
     buildTypes {
@@ -33,8 +43,6 @@ android {
 
 dependencies {
 
-    //Core
-    implementation "androidx.core:core-ktx:$ktx_core_version"
 
     //Location
     implementation 'com.google.android.gms:play-services-location:20.0.0'
@@ -42,6 +50,9 @@ dependencies {
     //Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+
+    //Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
 
     //Firebase
     implementation platform('com.google.firebase:firebase-bom:30.4.0')
