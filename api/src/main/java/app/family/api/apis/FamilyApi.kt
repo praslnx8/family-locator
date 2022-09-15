@@ -1,6 +1,5 @@
 package app.family.api.apis
 
-import android.util.Log
 import androidx.datastore.core.DataStore
 import app.family.api.mappers.StatusMapper
 import app.family.api.models.StatusCollectionProto
@@ -22,14 +21,15 @@ class FamilyApi(
     private val statusMapper: StatusMapper
 ) {
 
-    fun createFamily(familyId: String, password: String): Flow<Boolean> = callbackFlow {
+    fun createFamily(familyId: String, password: String): Flow<Unit> = callbackFlow {
         familyReference.child(familyId).child("password").setValue(password).addOnCompleteListener {
             if (it.isSuccessful) {
-                Log.i("Family Api", "Success creating Family")
+                trySend(Unit)
+                close()
             } else {
-                Log.e("Family API", "Error creating Family " + it.exception?.message)
+                close(it.exception)
             }
-            trySend(it.isSuccessful)
+
         }
         awaitClose()
     }
@@ -39,15 +39,15 @@ class FamilyApi(
         userId: String,
         name: String,
         statusDto: StatusDto
-    ): Flow<Boolean> = callbackFlow {
+    ): Flow<Unit> = callbackFlow {
         familyReference.child(familyId).child("statuses").child(userId)
             .setValue(UserStatusDto(name, statusDto)).addOnCompleteListener {
                 if (it.isSuccessful) {
-                    Log.i("Family API", "Success pushing status")
+                    trySend(Unit)
+                    close()
                 } else {
-                    Log.e("Family API", "Failure in pushing status " + it.exception?.message)
+                    close(it.exception)
                 }
-                trySend(it.isSuccessful)
             }
         awaitClose()
     }
@@ -56,7 +56,6 @@ class FamilyApi(
         val statusReference = familyReference.child(familyId).child("statuses")
         val valueEventListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                Log.i("Family API", "Data change occured")
                 val userStatusMap = mutableMapOf<String, UserStatusDto>()
                 snapshot.children.forEach { dataSnapShot ->
                     val value = dataSnapShot.getValue(UserStatusDto::class.java)
@@ -69,16 +68,11 @@ class FamilyApi(
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("Family API", "family status update cancelled " + error.message)
-                close()
+                close(error.toException())
             }
-
         }
         statusReference.addValueEventListener(valueEventListener)
-        awaitClose {
-            Log.w("Family API", "Family status listen closed")
-            statusReference.removeEventListener(valueEventListener)
-        }
+        awaitClose { statusReference.removeEventListener(valueEventListener) }
     }
 
     fun storeFamilyUpdates(userStatusMap: Map<String, UserStatusDto>): Flow<Unit> = flow {

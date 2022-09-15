@@ -137,28 +137,26 @@ class DomainModule {
     @Provides
     fun provideMessageUseCase(
         authApi: AuthApi,
-        userApi: UserApi,
+        familyCreateUseCase: FamilyCreateUseCase,
         messageApi: MessageApi,
         messageMapper: MessageMapper
     ): MessageUseCase {
-        return MessageUseCase(authApi, userApi, messageApi, messageMapper)
+        return MessageUseCase(authApi, familyCreateUseCase, messageApi, messageMapper)
     }
 
     @Provides
     fun provideUpdateFamilyStatusUseCase(
-        authApi: AuthApi,
-        userApi: UserApi,
+        familyCreateUseCase: FamilyCreateUseCase,
         familyApi: FamilyApi
     ): UpdateFamilyStatusUseCase {
-        return UpdateFamilyStatusUseCase(authApi, userApi, familyApi)
+        return UpdateFamilyStatusUseCase(familyCreateUseCase, familyApi)
     }
 
     @Provides
     fun provideUpdateMessageUseCase(
-        authApi: AuthApi,
-        userApi: UserApi,
+        familyCreateUseCase: FamilyCreateUseCase,
         messageApi: MessageApi
     ): UpdateMessageUseCase {
-        return UpdateMessageUseCase(authApi, userApi, messageApi)
+        return UpdateMessageUseCase(familyCreateUseCase, messageApi)
     }
 }

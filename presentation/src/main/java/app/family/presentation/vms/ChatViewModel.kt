@@ -10,9 +10,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -26,24 +26,26 @@ class ChatViewModel @Inject constructor(
     private val viewModelJob = SupervisorJob()
     private val viewModelScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    fun listenToMessage(): Flow<MessageViewState> = flow {
-        val userId = userUseCase.getUser().first()?.id ?: ""
-        messageUseCase.listenToChat().map {
-            val messageViewState = MessageViewState(it.map { message ->
-                MessageState(
-                    name = message.senderName,
-                    message = message.message,
-                    time = message.time,
-                    isCurrentUser = message.senderId == userId
-                )
-            })
-            emit(messageViewState)
-        }.collect()
+    fun listenToMessage(): Flow<MessageViewState> {
+        return userUseCase.getUser().flatMapMerge { user ->
+            messageUseCase.listenToChat().map { messages ->
+                MessageViewState(messages.map { message ->
+                    MessageState(
+                        name = message.senderName,
+                        message = message.message,
+                        time = message.time,
+                        isCurrentUser = message.senderId == user.id
+                    )
+                })
+            }
+        }
     }
 
     fun addMessage(message: String) {
         viewModelScope.launch {
-            messageUseCase.sendMessage(message).collect()
+            messageUseCase.sendMessage(message)
+                .catch { }
+                .collect()
         }
     }
 }

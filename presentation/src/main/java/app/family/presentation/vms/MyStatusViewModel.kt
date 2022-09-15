@@ -18,7 +18,7 @@ class MyStatusViewModel @Inject constructor(
     fun getMyStatus(): Flow<StatusState> {
         return combine(userUseCase.getUser(), myStatusUseCase.getStatus()) { user, status ->
             StatusState(
-                name = user?.name ?: "",
+                name = user.name ?: "",
                 activityType = status.activityStatus?.type,
                 activityTime = status.activityStatus?.time,
                 locality = status.locationStatus?.locality,

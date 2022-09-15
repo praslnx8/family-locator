@@ -9,6 +9,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -26,12 +28,11 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
             loginUseCase.login()
                 .onStart {
                     _loginState.emit(LoginState(isFetching = true))
-                }
-                .collect {
+                }.collect {
                     _loginState.emit(
                         LoginState(
-                            loggedIn = it != null,
-                            name = it?.name?.ifBlank { null },
+                            loggedIn = true,
+                            name = it.name?.ifBlank { null },
                             isFetching = false
                         )
                     )
@@ -45,16 +46,11 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
             loginUseCase.setName(name)
                 .onStart {
                     _loginState.emit(
-                        LoginState(
-                            isFetching = true
-                        )
+                        LoginState(isFetching = true)
                     )
-                }
-                .collect { isSuccess ->
-                    if (isSuccess) {
-                        checkLogin()
-                    }
-                }
+                }.onCompletion {
+                    checkLogin()
+                }.collect()
         }
 
     }

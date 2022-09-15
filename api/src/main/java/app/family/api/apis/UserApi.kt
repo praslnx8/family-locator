@@ -1,6 +1,5 @@
 package app.family.api.apis
 
-import android.util.Log
 import app.family.api.models.InvitationDto
 import com.google.firebase.database.DatabaseReference
 import kotlinx.coroutines.channels.awaitClose
@@ -9,16 +8,16 @@ import kotlinx.coroutines.flow.callbackFlow
 
 class UserApi(private val userReference: DatabaseReference) {
 
-    fun joinFamily(userId: String, familyId: String, password: String): Flow<Boolean> =
+    fun joinFamily(userId: String, familyId: String, password: String): Flow<Unit> =
         callbackFlow {
             userReference.child(userId).setValue(InvitationDto(familyId, password))
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
-                        Log.i("User APi", "Success joining Family")
+                        trySend(Unit)
+                        close()
                     } else {
-                        Log.e("User APi", "Error joining family " + it.exception?.message)
+                        close(it.exception)
                     }
-                    trySend(it.isSuccessful)
                 }
             awaitClose()
         }
@@ -27,26 +26,35 @@ class UserApi(private val userReference: DatabaseReference) {
     fun getFamilyId(userId: String): Flow<String?> = callbackFlow {
         userReference.child(userId).child("family_id").get().addOnCompleteListener {
             if (it.isSuccessful) {
-                Log.i("User APi", "Success fetching family id")
-                trySend(it.result.value as? String)
+                val familyId = it.result.value as? String
+                if (familyId != null) {
+                    trySend(familyId)
+                    close()
+                } else {
+                    trySend(null)
+                    close()
+                }
             } else {
-                Log.e("User APi", "Error fetching family id" + it.exception?.message)
-                trySend(null)
+                close(it.exception)
             }
         }
-        awaitClose { }
+        awaitClose()
     }
 
-    fun getFamilyPassword(userId: String): Flow<String?> = callbackFlow {
+    fun getFamilyPassword(userId: String): Flow<String> = callbackFlow {
         userReference.child(userId).child("family_password").get().addOnCompleteListener {
             if (it.isSuccessful) {
-                Log.i("User APi", "Success fetching family password")
-                trySend(it.result.value as? String)
+                val password = it.result.value as? String
+                if (password != null) {
+                    trySend(password)
+                    close()
+                } else {
+                    close()
+                }
             } else {
-                Log.e("User APi", "Error fetching family password" + it.exception?.message)
-                trySend(null)
+                close(it.exception)
             }
         }
-        awaitClose { }
+        awaitClose()
     }
 }

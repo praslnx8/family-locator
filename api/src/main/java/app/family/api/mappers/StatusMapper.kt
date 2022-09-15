@@ -14,11 +14,11 @@ class StatusMapper {
             .build()
     }
 
-    fun mapToStatusProto(statusDto: StatusDto): StatusProto {
+    private fun mapToStatusProto(statusDto: StatusDto): StatusProto {
         return StatusProto.newBuilder()
             .setLat(statusDto.lat ?: 0.0)
             .setLon(statusDto.lon ?: 0.0)
-            .setLocality(statusDto.locality)
+            .setLocality(statusDto.locality?:"")
             .setLocationTime(statusDto.locationTime ?: 0L)
             .setTemperature(statusDto.temperature ?: 0.0)
             .setWeatherType(statusDto.weatherType ?: 0)

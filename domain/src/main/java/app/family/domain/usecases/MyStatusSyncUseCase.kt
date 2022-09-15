@@ -7,12 +7,15 @@ import app.family.api.apis.MyStatusApi
 import app.family.api.apis.WeatherApi
 import app.family.api.models.LocationDto
 import app.family.domain.models.status.ActivityType
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
+@OptIn(FlowPreview::class)
 class MyStatusSyncUseCase(
     private val locationAPI: LocationAPI,
     private val localityApi: LocalityApi,
@@ -42,36 +45,39 @@ class MyStatusSyncUseCase(
     }
 
     private fun syncLocationApi(): Flow<Unit> {
-        return locationAPI.fetchLocation().map { location ->
-            if (location != null) {
-                updateLocation(location)
-                syncDeviceApi().collect()
-                syncWeather(location)
+        return locationAPI.fetchLocation().flatMapMerge { location ->
+            combine(updateLocation(location), syncDeviceApi(), syncWeather(location)) { _, _, _ -> }
+        }
+    }
+
+    private fun updateLocation(locationDto: LocationDto): Flow<Unit> {
+        return localityApi.getLocality(locationDto.lat, locationDto.lon).flatMapMerge { locality ->
+            if (locality != null) {
+                statusApi.updateLocation(
+                    locationDto.lat,
+                    locationDto.lon,
+                    locality,
+                    System.currentTimeMillis()
+                )
+            } else {
+                flowOf(Unit)
             }
         }
     }
 
-    private suspend fun updateLocation(locationDto: LocationDto) {
-        val locality = localityApi.getLocality(locationDto.lat, locationDto.lon).first()
-        if (locality != null) {
-            statusApi.updateLocation(
-                locationDto.lat,
-                locationDto.lon,
-                locality,
-                System.currentTimeMillis()
-            ).collect()
-        }
-    }
-
-    private suspend fun syncWeather(locationDto: LocationDto) {
-        val weatherDto = weatherApi.fetchWeather(locationDto.lat, locationDto.lon).first()
-        if (weatherDto != null) {
-            statusApi.updateWeather(
-                weatherDto.getTemp(),
-                weatherDto.getWeather(),
-                System.currentTimeMillis()
-            ).collect()
-        }
+    private fun syncWeather(locationDto: LocationDto): Flow<Unit> {
+        return weatherApi.fetchWeather(locationDto.lat, locationDto.lon)
+            .flatMapMerge { weatherDto ->
+                if (weatherDto != null) {
+                    statusApi.updateWeather(
+                        weatherDto.getTemp(),
+                        weatherDto.getWeather(),
+                        System.currentTimeMillis()
+                    )
+                } else {
+                    flowOf(Unit)
+                }
+            }
     }
 
     private fun syncDeviceApi(): Flow<Unit> {

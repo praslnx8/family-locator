@@ -4,17 +4,22 @@ import app.family.api.apis.AuthApi
 import app.family.api.models.UserDto
 import app.family.domain.models.User
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 class LoginUseCase(private val authApi: AuthApi) {
 
-    fun login(): Flow<User?> = flow {
-        val userDTO = authApi.getUser().firstOrNull() ?: authApi.signIn().firstOrNull()
-        emit(userDTO?.let { mapToUser(it) })
+    fun login(): Flow<User> {
+        val authFlow = if (authApi.isSignedIn()) {
+            authApi.getUser()
+        } else {
+            authApi.signIn()
+        }
+        return authFlow.map {
+            mapToUser(it)
+        }
     }
 
-    fun setName(name: String): Flow<Boolean> {
+    fun setName(name: String): Flow<Unit> {
         return authApi.setName(name)
     }
 

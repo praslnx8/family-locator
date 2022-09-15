@@ -11,30 +11,46 @@ import kotlinx.coroutines.flow.flow
 
 class AuthApi(private val auth: FirebaseAuth) {
 
-    fun getUser(): Flow<UserDto?> = flow {
-        emit(auth.currentUser?.let { convertToUserDto(it) })
+    fun isSignedIn(): Boolean {
+        return auth.currentUser != null
     }
 
-    fun setName(name: String): Flow<Boolean> = callbackFlow {
+    fun getUser(): Flow<UserDto> = flow {
+        val firebaseUser = auth.currentUser ?: throw Exception("User not found")
+        emit(convertToUserDto(firebaseUser))
+    }
+
+    fun setName(name: String): Flow<Unit> = callbackFlow {
         auth.currentUser?.updateProfile(
             UserProfileChangeRequest.Builder()
                 .setDisplayName(name)
                 .build()
         )?.addOnCompleteListener {
-            trySend(it.isSuccessful)
-        }
-        awaitClose{  }
-    }
-
-    fun signIn(): Flow<UserDto?> = callbackFlow {
-        auth.signInAnonymously().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                trySend(auth.currentUser?.let { convertToUserDto(it) })
+            if (it.isSuccessful) {
+                trySend(Unit)
+                close()
             } else {
-                trySend(null)
+                close(it.exception)
             }
         }
-        awaitClose{  }
+        awaitClose { }
+    }
+
+    fun signIn(): Flow<UserDto> = callbackFlow {
+        auth.signInAnonymously().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val user = task.result?.user
+                if (user != null) {
+                    trySend(convertToUserDto(user))
+                    close()
+                } else {
+                    close(Exception("User not found"))
+                }
+            } else {
+                close(task.exception)
+            }
+        }
+        awaitClose { }
     }
 
     private fun convertToUserDto(firebaseUser: FirebaseUser): UserDto {

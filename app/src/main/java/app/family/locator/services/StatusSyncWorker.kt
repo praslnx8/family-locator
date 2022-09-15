@@ -11,7 +11,6 @@ import app.family.domain.usecases.UploadStatusUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
 import java.time.Duration
 
 class StatusSyncWorker @AssistedInject constructor(
@@ -23,12 +22,8 @@ class StatusSyncWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         syncUseCase.syncNow().collect()
-        val isUploaded = uploadUseCase.uploadMyStatus().first()
-        return if (isUploaded) {
-            Result.success()
-        } else {
-            Result.retry()
-        }
+        uploadUseCase.uploadMyStatus().collect()
+        return Result.success()
     }
 
     companion object {

@@ -9,7 +9,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,9 +23,8 @@ class ProfileViewModel @Inject constructor(
 
     fun getProfile() {
         viewModelScope.launch {
-            val user = userUseCase.getUser().first()
-            user?.let {
-                _profileState.emit(ProfileState(it.name ?: ""))
+            userUseCase.getUser().collect { user ->
+                _profileState.emit(ProfileState(user.name ?: ""))
             }
         }
     }

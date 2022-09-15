@@ -7,9 +7,9 @@ import kotlinx.coroutines.flow.map
 
 class UserUseCase(private val authApi: AuthApi) {
 
-    fun getUser(): Flow<User?> {
+    fun getUser(): Flow<User> {
         return authApi.getUser().map {
-            it?.let { User(it.id, it.name?.ifBlank { null }) }
+            User(it.id, it.name?.ifBlank { null })
         }
     }
 }

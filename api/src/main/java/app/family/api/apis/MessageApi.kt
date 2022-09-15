@@ -23,7 +23,7 @@ class MessageApi(
         senderName: String,
         message: String,
         time: Long
-    ): Flow<Boolean> = callbackFlow {
+    ): Flow<Unit> = callbackFlow {
         val messageReference = familyReference.child(familyId).child("messages")
         messageReference.push()
             .setValue(
@@ -36,11 +36,10 @@ class MessageApi(
             )
             .addOnCompleteListener {
                 if (it.isSuccessful) {
-                    Log.i("Chat Api", "Success sending message")
-                    trySend(true)
+                    trySend(Unit)
+                    close()
                 } else {
-                    Log.e("Chat Api", "Error sending message " + it.exception?.message)
-                    trySend(false)
+                    close(it.exception)
                 }
             }
         awaitClose()
@@ -50,7 +49,6 @@ class MessageApi(
         val messageReference = familyReference.child(familyId).child("messages")
         val valueEventListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                Log.i("Chat API", "Message received")
                 val messages = mutableListOf<MessageDto>()
                 snapshot.children.forEach { messageSnapShot ->
                     messageSnapShot.getValue(MessageDto::class.java)?.let {
@@ -61,14 +59,11 @@ class MessageApi(
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("Chat API", "Listening to chat cancelled " + error.message)
+                Log.w("Chat API", "Listening to chat cancelled " + error.message)
             }
         }
         messageReference.limitToLast(100).addValueEventListener(valueEventListener)
-        awaitClose {
-            Log.w("Message API", "Message listen closed")
-            messageReference.removeEventListener(valueEventListener)
-        }
+        awaitClose { messageReference.removeEventListener(valueEventListener) }
     }
 
     fun storeMessages(messages: List<MessageDto>): Flow<Unit> = flow {

@@ -14,8 +14,8 @@ class FamilyStatusViewModel @Inject constructor(
 ) : ViewModel() {
 
     fun getFamilyStatuses(): Flow<List<StatusState>> {
-        return fetchFamilyStatusUseCase.fetchFamilyStatuses().map {
-            it.map { userStatus ->
+        return fetchFamilyStatusUseCase.fetchFamilyStatuses().map { userStatusList ->
+            userStatusList.map { userStatus ->
                 StatusState(
                     name = userStatus.name,
                     activityType = userStatus.status.activityStatus?.type,
