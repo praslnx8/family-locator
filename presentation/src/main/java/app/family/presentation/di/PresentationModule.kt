@@ -11,6 +11,7 @@ import app.family.presentation.vms.FamilyStatusViewModel
 import app.family.presentation.vms.HomeViewModel
 import app.family.presentation.vms.LoginViewModel
 import app.family.presentation.vms.MyStatusViewModel
+import app.family.presentation.vms.ProfileViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -46,5 +47,10 @@ class PresentationModule {
     @Provides
     fun provideChatViewModel(messageUseCase: MessageUseCase): ChatViewModel {
         return ChatViewModel(messageUseCase)
+    }
+
+    @Provides
+    fun provideProfileViewModel(userUseCase: UserUseCase): ProfileViewModel {
+        return ProfileViewModel(userUseCase)
     }
 }

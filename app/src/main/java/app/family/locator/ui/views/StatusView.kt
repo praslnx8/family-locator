@@ -44,11 +44,7 @@ fun StatusView(statusState: StatusState) {
 
             AvatarView(
                 name = statusState.name,
-                modifier = Modifier
-                    .padding(
-                        start = dimensionResource(id = R.dimen.small_padding),
-                        end = dimensionResource(id = R.dimen.small_padding)
-                    ),
+                modifier = Modifier,
             )
 
             Column(

@@ -29,10 +29,7 @@ fun ChatBubbleView(messageState: MessageState) {
                 .padding(dimensionResource(id = R.dimen.default_padding)),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AvatarView(
-                name = messageState.name,
-                modifier = Modifier.padding(dimensionResource(id = R.dimen.small_padding))
-            )
+            AvatarView(name = messageState.name)
             Text(
                 modifier = Modifier
                     .padding(start = dimensionResource(id = R.dimen.default_padding))
