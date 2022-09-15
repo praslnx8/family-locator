@@ -49,7 +49,10 @@ class LocationAPI(
             Looper.getMainLooper()
         )
 
-        awaitClose { locationProviderClient.removeLocationUpdates(locationCallback) }
+        awaitClose {
+            Log.w("Location API", "Location listen closed")
+            locationProviderClient.removeLocationUpdates(locationCallback)
+        }
     }
 
     private fun fetchCurrentLocation(): Flow<Location?> = callbackFlow {

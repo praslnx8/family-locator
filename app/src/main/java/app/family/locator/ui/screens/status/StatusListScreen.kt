@@ -14,7 +14,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import app.family.locator.services.StatusSyncService
 import app.family.locator.ui.views.InvitationDialogView
 import app.family.presentation.vms.HomeViewModel
 
@@ -23,6 +25,7 @@ import app.family.presentation.vms.HomeViewModel
 fun StatusListScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     val inviteClicked = rememberSaveable(Unit) { mutableStateOf(false) }
     Scaffold(
         floatingActionButton = {
@@ -46,6 +49,7 @@ fun StatusListScreen(
                     inviteClicked.value = false
                 },
                 onJoined = {
+                    StatusSyncService.startService(context)
                     viewModel.pushFamilyStatus()
                 }
             )

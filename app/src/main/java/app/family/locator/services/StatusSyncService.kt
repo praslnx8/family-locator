@@ -16,8 +16,9 @@ import com.google.android.gms.location.ActivityRecognition
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -42,24 +43,10 @@ class StatusSyncService : Service() {
 
     private lateinit var activityTransitionReceiver: ActivityTransitionReceiver
     private lateinit var pendingIntent: PendingIntent
-    private val job = SupervisorJob()
-    private val scope = CoroutineScope(Dispatchers.IO + job)
+    private var job: Job? = null
 
     override fun onCreate() {
         super.onCreate()
-
-        scope.launch {
-            myStatusSyncUseCase.listenAndSync().collect()
-        }
-        scope.launch {
-            uploadStatusUseCase.uploadMyStatus().collect()
-        }
-        scope.launch {
-            updateFamilyStatusUseCase.listenAndUpdateFamilyStatus().collect()
-        }
-        scope.launch {
-            updateMessageUseCase.syncAndUpdateMessages().collect()
-        }
 
         listenToActivityDetection()
         startForeground()
@@ -67,7 +54,31 @@ class StatusSyncService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
+        job?.cancel("Invalidate old ones")
+        job = SupervisorJob()
+        val scope = CoroutineScope(Dispatchers.IO + (job ?: SupervisorJob()))
         Log.i("Service", "On start called")
+        scope.launch {
+            myStatusSyncUseCase.listenAndSync().collect {
+                Log.i("Service", "Listen and sync")
+            }
+        }
+        scope.launch {
+            uploadStatusUseCase.uploadMyStatus().collect() {
+                Log.i("Service", "Upload status")
+            }
+        }
+        scope.launch {
+            updateFamilyStatusUseCase.listenAndUpdateFamilyStatus().collect() {
+                Log.i("Service", "Listen and update family status")
+            }
+        }
+        scope.launch {
+            updateMessageUseCase.syncAndUpdateMessages().collect() {
+                Log.i("Service", "Listen and update message")
+            }
+        }
+        Log.i("Service", "Listening to all")
         return START_STICKY
     }
 

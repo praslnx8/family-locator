@@ -1,5 +1,6 @@
 package app.family.domain.usecases
 
+import android.util.Log
 import app.family.api.apis.AuthApi
 import app.family.api.apis.MessageApi
 import app.family.api.apis.UserApi
@@ -15,7 +16,10 @@ class UpdateMessageUseCase(
     fun syncAndUpdateMessages(): Flow<Unit> = flow {
         val user = authApi.getUser().first()
         val familyId = userApi.getFamilyId(user?.id ?: "").first() ?: ""
-        messageApi.listenToMessageAndUpdate(familyId).collect() {
+        messageApi.listenToMessage(familyId).collect() {
+            Log.i("Update Message UseCase", "Messages Came")
+            messageApi.storeMessages(it).first()
+            Log.i("Update Message UseCase", "Stored messages")
             emit(Unit)
         }
     }

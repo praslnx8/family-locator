@@ -10,7 +10,7 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.flow
 
 class MessageApi(
     private val familyReference: DatabaseReference,
@@ -46,7 +46,7 @@ class MessageApi(
         awaitClose()
     }
 
-    fun listenToMessageAndUpdate(familyId: String): Flow<Unit> = callbackFlow {
+    fun listenToMessage(familyId: String): Flow<List<MessageDto>> = callbackFlow {
         val messageReference = familyReference.child(familyId).child("messages")
         val valueEventListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -57,10 +57,7 @@ class MessageApi(
                         messages.add(it)
                     }
                 }
-                launch {
-                    messageDao.insertAll(messages)
-                }
-                trySend(Unit)
+                trySend(messages)
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -68,7 +65,15 @@ class MessageApi(
             }
         }
         messageReference.limitToLast(100).addValueEventListener(valueEventListener)
-        awaitClose { messageReference.removeEventListener(valueEventListener) }
+        awaitClose {
+            Log.w("Message API", "Message listen closed")
+            messageReference.removeEventListener(valueEventListener)
+        }
+    }
+
+    fun storeMessages(messages: List<MessageDto>): Flow<Unit> = flow {
+        messageDao.insertAll(messages)
+        emit(Unit)
     }
 
     fun fetchMessages(): Flow<List<MessageDto>> {

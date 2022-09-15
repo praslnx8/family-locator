@@ -13,8 +13,8 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 
 class FamilyApi(
     private val familyReference: DatabaseReference,
@@ -52,7 +52,7 @@ class FamilyApi(
         awaitClose()
     }
 
-    fun listenToFamilyUpdatesAndPush(familyId: String): Flow<Unit> = callbackFlow {
+    fun listenToFamilyUpdates(familyId: String): Flow<Map<String, UserStatusDto>> = callbackFlow {
         val statusReference = familyReference.child(familyId).child("statuses")
         val valueEventListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -65,20 +65,7 @@ class FamilyApi(
                         userStatusMap[key.toString()] = value
                     }
                 }
-                Log.i("Family API", "Fetched family status of count " + userStatusMap.size)
-                val statusMap = userStatusMap.mapValues {
-                    statusMapper.mapToStatusProto(it.value)
-                }
-                launch {
-                    statusCollectionDataStore.updateData { oldData ->
-                        oldData.toBuilder()
-                            .clearUserStatuses()
-                            .putAllUserStatuses(statusMap)
-                            .build()
-                    }
-                }
-
-                trySend(Unit)
+                trySend(userStatusMap)
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -88,11 +75,27 @@ class FamilyApi(
 
         }
         statusReference.addValueEventListener(valueEventListener)
-        awaitClose { statusReference.removeEventListener(valueEventListener) }
+        awaitClose {
+            Log.w("Family API", "Family status listen closed")
+            statusReference.removeEventListener(valueEventListener)
+        }
+    }
+
+    fun storeFamilyUpdates(userStatusMap: Map<String, UserStatusDto>): Flow<Unit> = flow {
+        val statusMap = userStatusMap.mapValues {
+            statusMapper.mapToStatusProto(it.value)
+        }
+        statusCollectionDataStore.updateData { oldData ->
+            oldData.toBuilder()
+                .clearUserStatuses()
+                .putAllUserStatuses(statusMap)
+                .build()
+        }
+        emit(Unit)
     }
 
     fun fetchFamilyUpdates(): Flow<Map<String, UserStatusDto?>> {
-        return statusCollectionDataStore.data.map { statusCollectionProto->
+        return statusCollectionDataStore.data.map { statusCollectionProto ->
             statusCollectionProto.userStatusesMap.mapValues {
                 statusMapper.mapToStatusDto(it.value)
             }
