@@ -21,6 +21,7 @@ import app.family.domain.usecases.MessageUseCase
 import app.family.domain.usecases.MyStatusSyncUseCase
 import app.family.domain.usecases.MyStatusUseCase
 import app.family.domain.usecases.UpdateFamilyStatusUseCase
+import app.family.domain.usecases.UpdateMessageUseCase
 import app.family.domain.usecases.UploadStatusUseCase
 import app.family.domain.usecases.UserUseCase
 import app.family.domain.utils.RandomPassCodeGenerator
@@ -150,5 +151,14 @@ class DomainModule {
         familyApi: FamilyApi
     ): UpdateFamilyStatusUseCase {
         return UpdateFamilyStatusUseCase(authApi, userApi, familyApi)
+    }
+
+    @Provides
+    fun provideUpdateMessageUseCase(
+        authApi: AuthApi,
+        userApi: UserApi,
+        messageApi: MessageApi
+    ): UpdateMessageUseCase {
+        return UpdateMessageUseCase(authApi, userApi, messageApi)
     }
 }

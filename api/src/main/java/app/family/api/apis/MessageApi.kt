@@ -1,6 +1,7 @@
 package app.family.api.apis
 
 import android.util.Log
+import app.family.api.db.daos.MessageDao
 import app.family.api.models.MessageDto
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -9,8 +10,12 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.launch
 
-class MessageApi(private val familyReference: DatabaseReference) {
+class MessageApi(
+    private val familyReference: DatabaseReference,
+    private val messageDao: MessageDao
+) {
 
     fun sendMessage(
         familyId: String,
@@ -19,7 +24,8 @@ class MessageApi(private val familyReference: DatabaseReference) {
         time: Long
     ): Flow<Boolean> = callbackFlow {
         val messageReference = familyReference.child(familyId).child("messages")
-        messageReference.push().setValue(MessageDto(senderName, message, time))
+        messageReference.push()
+            .setValue(MessageDto(senderName = senderName, message = message, time = time))
             .addOnCompleteListener {
                 if (it.isSuccessful) {
                     Log.i("Chat Api", "Success sending message")
@@ -32,7 +38,7 @@ class MessageApi(private val familyReference: DatabaseReference) {
         awaitClose()
     }
 
-    fun listenToMessages(familyId: String): Flow<List<MessageDto>> = callbackFlow {
+    fun listenToMessageAndUpdate(familyId: String): Flow<Unit> = callbackFlow {
         val messageReference = familyReference.child(familyId).child("messages")
         val valueEventListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -43,7 +49,10 @@ class MessageApi(private val familyReference: DatabaseReference) {
                         messages.add(it)
                     }
                 }
-                trySend(messages)
+                launch {
+                    messageDao.insertAll(messages)
+                }
+                trySend(Unit)
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -52,5 +61,9 @@ class MessageApi(private val familyReference: DatabaseReference) {
         }
         messageReference.limitToLast(100).addValueEventListener(valueEventListener)
         awaitClose { messageReference.removeEventListener(valueEventListener) }
+    }
+
+    fun fetchMessages(): Flow<List<MessageDto>> {
+        return messageDao.fetchMessages()
     }
 }

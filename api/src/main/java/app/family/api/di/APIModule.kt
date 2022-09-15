@@ -16,6 +16,7 @@ import app.family.api.apis.MessageApi
 import app.family.api.apis.MyStatusApi
 import app.family.api.apis.UserApi
 import app.family.api.apis.WeatherApi
+import app.family.api.db.AppDatabaseProvider
 import app.family.api.mappers.StatusMapper
 import app.family.api.models.StatusCollectionProto
 import app.family.api.models.StatusProto
@@ -125,7 +126,13 @@ class APIModule {
 
     @Singleton
     @Provides
-    fun provideChatApi(database: FirebaseDatabase): MessageApi {
-        return MessageApi(database.getReference("families"))
+    fun provideChatApi(
+        @ApplicationContext context: Context,
+        database: FirebaseDatabase
+    ): MessageApi {
+        return MessageApi(
+            database.getReference("families"),
+            AppDatabaseProvider(context).getDatabase().messageDao()
+        )
     }
 }

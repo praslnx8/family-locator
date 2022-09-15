@@ -9,6 +9,7 @@ import android.os.IBinder
 import android.util.Log
 import app.family.domain.usecases.MyStatusSyncUseCase
 import app.family.domain.usecases.UpdateFamilyStatusUseCase
+import app.family.domain.usecases.UpdateMessageUseCase
 import app.family.domain.usecases.UploadStatusUseCase
 import app.family.locator.utils.NotificationUtils
 import com.google.android.gms.location.ActivityRecognition
@@ -34,6 +35,9 @@ class StatusSyncService : Service() {
     lateinit var updateFamilyStatusUseCase: UpdateFamilyStatusUseCase
 
     @Inject
+    lateinit var updateMessageUseCase: UpdateMessageUseCase
+
+    @Inject
     lateinit var notificationUtils: NotificationUtils
 
     private lateinit var activityTransitionReceiver: ActivityTransitionReceiver
@@ -52,6 +56,9 @@ class StatusSyncService : Service() {
         }
         scope.launch {
             updateFamilyStatusUseCase.listenAndUpdateFamilyStatus().collect()
+        }
+        scope.launch {
+            updateMessageUseCase.syncAndUpdateMessages().collect()
         }
 
         listenToActivityDetection()

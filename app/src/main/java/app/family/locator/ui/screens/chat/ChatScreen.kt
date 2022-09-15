@@ -35,7 +35,9 @@ fun ChatScreen(viewModel: ChatViewModel = hiltViewModel()) {
 
     Column {
         Box(modifier = Modifier.weight(1f)) {
-            LazyColumn() {
+            LazyColumn(
+                reverseLayout = true
+            ) {
                 items(items = chatMessageViewState.value.messages, itemContent = { item ->
                     ChatBubbleView(messageState = item)
                 })
@@ -52,6 +54,7 @@ fun ChatScreen(viewModel: ChatViewModel = hiltViewModel()) {
                         Text(text = "Enter Message")
                     }
                 },
+                maxLines = 1,
                 value = messageTextState.value,
                 onValueChange = {
                     messageTextState.value = it
@@ -60,11 +63,12 @@ fun ChatScreen(viewModel: ChatViewModel = hiltViewModel()) {
                     capitalization = KeyboardCapitalization.Sentences,
                     autoCorrect = true,
                     keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Send
+                    imeAction = ImeAction.Send,
                 ),
                 keyboardActions = KeyboardActions(onSend = {
                     if (messageTextState.value.isNotBlank()) {
                         viewModel.addMessage(messageTextState.value)
+                        messageTextState.value = ""
                     }
                 }),
             )

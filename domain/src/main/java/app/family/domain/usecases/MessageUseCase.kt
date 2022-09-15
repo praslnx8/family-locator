@@ -29,9 +29,7 @@ class MessageUseCase(
     }
 
     fun listenToChat(): Flow<List<Message>> = flow {
-        val user = authApi.getUser().first()
-        val familyId = userApi.getFamilyId(user?.id ?: "").first() ?: ""
-        messageApi.listenToMessages(familyId).collect { messageList ->
+        messageApi.fetchMessages().collect { messageList ->
             emit(messageList.map { messageDto ->
                 messageMapper.mapFromMessageDto(messageDto)
             })
