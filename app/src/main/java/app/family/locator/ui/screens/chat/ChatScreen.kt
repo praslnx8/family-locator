@@ -10,7 +10,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -52,12 +56,12 @@ fun ChatScreen(viewModel: ChatViewModel = hiltViewModel()) {
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.Start
                     ) {
                         Text(text = "Enter Message", style = MaterialTheme.typography.bodyMedium)
                     }
                 },
-                maxLines = 1,
+                maxLines = 3,
                 value = messageTextState.value,
                 onValueChange = {
                     messageTextState.value = it
@@ -74,7 +78,18 @@ fun ChatScreen(viewModel: ChatViewModel = hiltViewModel()) {
                         messageTextState.value = ""
                     }
                 }),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = dimensionResource(id = R.dimen.small_padding))
             )
+            FloatingActionButton(onClick = {
+                if (messageTextState.value.isNotBlank()) {
+                    viewModel.addMessage(messageTextState.value)
+                    messageTextState.value = ""
+                }
+            }) {
+                Icon(imageVector = Icons.Filled.Send, contentDescription = "Send message")
+            }
         }
     }
 }

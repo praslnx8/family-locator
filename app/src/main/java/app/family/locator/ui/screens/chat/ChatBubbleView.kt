@@ -1,10 +1,12 @@
 package app.family.locator.ui.screens.chat
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,15 +24,23 @@ import app.family.presentation.models.MessageState
 fun ChatBubbleView(messageState: MessageState) {
 
     Column(modifier = Modifier.fillMaxWidth(1f)) {
+        val backgroundBubbleColor = if (messageState.isCurrentUser) {
+            MaterialTheme.colorScheme.primary
+        } else {
+            MaterialTheme.colorScheme.surfaceVariant
+        }
+
         val alignment = if (messageState.isCurrentUser) {
             Alignment.End
         } else {
             Alignment.Start
         }
-        Card(
+        Surface(
             modifier = Modifier
                 .padding(dimensionResource(id = R.dimen.default_padding))
                 .align(alignment)
+                .background(backgroundBubbleColor),
+            color = backgroundBubbleColor
         ) {
             if (messageState.isCurrentUser) {
                 Column(
@@ -43,12 +53,14 @@ fun ChatBubbleView(messageState: MessageState) {
                             .align(Alignment.Start),
                         text = messageState.message,
                         style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         textAlign = TextAlign.Start
                     )
                     Text(
                         text = UIUtils.getRelativeTime(messageState.time),
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.align(Alignment.End),
+                        color = MaterialTheme.colorScheme.onPrimary,
                         textAlign = TextAlign.End
                     )
                 }
