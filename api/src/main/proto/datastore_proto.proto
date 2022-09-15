@@ -27,3 +27,12 @@ message StatusProto {
   //Overall Data
   int64 update_time = 13;
 }
+
+message UserStatusProto {
+  string name = 1;
+  StatusProto status = 2;
+}
+
+message StatusCollectionProto {
+  map<string, UserStatusProto> userStatuses = 1;
+}

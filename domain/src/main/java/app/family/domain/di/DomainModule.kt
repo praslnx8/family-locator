@@ -20,6 +20,7 @@ import app.family.domain.usecases.LoginUseCase
 import app.family.domain.usecases.MessageUseCase
 import app.family.domain.usecases.MyStatusSyncUseCase
 import app.family.domain.usecases.MyStatusUseCase
+import app.family.domain.usecases.UpdateFamilyStatusUseCase
 import app.family.domain.usecases.UploadStatusUseCase
 import app.family.domain.usecases.UserUseCase
 import app.family.domain.utils.RandomPassCodeGenerator
@@ -126,11 +127,10 @@ class DomainModule {
     @Provides
     fun provideFetchFamilyStatusUseCase(
         authApi: AuthApi,
-        userApi: UserApi,
         familyApi: FamilyApi,
         userStatusMapper: UserStatusMapper
     ): FetchFamilyStatusUseCase {
-        return FetchFamilyStatusUseCase(authApi, userApi, familyApi, userStatusMapper)
+        return FetchFamilyStatusUseCase(authApi, familyApi, userStatusMapper)
     }
 
     @Provides
@@ -141,5 +141,14 @@ class DomainModule {
         messageMapper: MessageMapper
     ): MessageUseCase {
         return MessageUseCase(authApi, userApi, messageApi, messageMapper)
+    }
+
+    @Provides
+    fun provideUpdateFamilyStatusUseCase(
+        authApi: AuthApi,
+        userApi: UserApi,
+        familyApi: FamilyApi
+    ): UpdateFamilyStatusUseCase {
+        return UpdateFamilyStatusUseCase(authApi, userApi, familyApi)
     }
 }

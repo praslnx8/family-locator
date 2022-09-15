@@ -7,17 +7,20 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
 import app.family.api.BuildConfig
 import app.family.api.apis.AuthApi
-import app.family.api.apis.MessageApi
 import app.family.api.apis.DeviceApi
 import app.family.api.apis.FamilyApi
 import app.family.api.apis.InviteApi
 import app.family.api.apis.LocalityApi
 import app.family.api.apis.LocationAPI
+import app.family.api.apis.MessageApi
 import app.family.api.apis.MyStatusApi
 import app.family.api.apis.UserApi
 import app.family.api.apis.WeatherApi
+import app.family.api.mappers.StatusMapper
+import app.family.api.models.StatusCollectionProto
 import app.family.api.models.StatusProto
 import app.family.api.network.WeatherApiClient
+import app.family.api.proto.StatusCollectionProtoSerializer
 import app.family.api.proto.StatusProtoSerializer
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
@@ -37,6 +40,11 @@ import javax.inject.Singleton
 private val Context.statusDataStore: DataStore<StatusProto> by dataStore(
     fileName = "status.pb",
     serializer = StatusProtoSerializer
+)
+
+private val Context.statusCollectionDataStore: DataStore<StatusCollectionProto> by dataStore(
+    fileName = "status_collection.pb",
+    serializer = StatusCollectionProtoSerializer
 )
 
 @InstallIn(SingletonComponent::class)
@@ -66,7 +74,7 @@ class APIModule {
     @Singleton
     @Provides
     fun provideMyStatusApi(@ApplicationContext context: Context): MyStatusApi {
-        return MyStatusApi(context.statusDataStore)
+        return MyStatusApi(context.statusDataStore, StatusMapper())
     }
 
     @Provides
@@ -82,8 +90,15 @@ class APIModule {
 
     @Singleton
     @Provides
-    fun provideFamilyApi(database: FirebaseDatabase): FamilyApi {
-        return FamilyApi(database.getReference("families"))
+    fun provideFamilyApi(
+        @ApplicationContext context: Context,
+        database: FirebaseDatabase
+    ): FamilyApi {
+        return FamilyApi(
+            database.getReference("families"),
+            context.statusCollectionDataStore,
+            StatusMapper()
+        )
     }
 
     @Singleton

@@ -1,6 +1,9 @@
 package app.family.api.apis
 
 import android.util.Log
+import androidx.datastore.core.DataStore
+import app.family.api.mappers.StatusMapper
+import app.family.api.models.StatusCollectionProto
 import app.family.api.models.StatusDto
 import app.family.api.models.UserStatusDto
 import com.google.firebase.database.DataSnapshot
@@ -10,8 +13,14 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
-class FamilyApi(private val familyReference: DatabaseReference) {
+class FamilyApi(
+    private val familyReference: DatabaseReference,
+    private val statusCollectionDataStore: DataStore<StatusCollectionProto>,
+    private val statusMapper: StatusMapper
+) {
 
     fun createFamily(familyId: String, password: String): Flow<Boolean> = callbackFlow {
         familyReference.child(familyId).child("password").setValue(password).addOnCompleteListener {
@@ -43,17 +52,33 @@ class FamilyApi(private val familyReference: DatabaseReference) {
         awaitClose()
     }
 
-    fun listenToFamilyUpdates(familyId: String): Flow<Map<String, UserStatusDto?>> = callbackFlow {
+    fun listenToFamilyUpdatesAndPush(familyId: String): Flow<Unit> = callbackFlow {
         val statusReference = familyReference.child(familyId).child("statuses")
         val valueEventListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 Log.i("Family API", "Data change occured")
-                val userStatusMap = mutableMapOf<String, UserStatusDto?>()
-                snapshot.children.forEach {
-                    userStatusMap[it.key.toString()] = it.getValue(UserStatusDto::class.java)
+                val userStatusMap = mutableMapOf<String, UserStatusDto>()
+                snapshot.children.forEach { dataSnapShot ->
+                    val value = dataSnapShot.getValue(UserStatusDto::class.java)
+                    val key = dataSnapShot.key
+                    if (value != null) {
+                        userStatusMap[key.toString()] = value
+                    }
                 }
                 Log.i("Family API", "Fetched family status of count " + userStatusMap.size)
-                trySend(userStatusMap)
+                val statusMap = userStatusMap.mapValues {
+                    statusMapper.mapToStatusProto(it.value)
+                }
+                launch {
+                    statusCollectionDataStore.updateData { oldData ->
+                        oldData.toBuilder()
+                            .clearUserStatuses()
+                            .putAllUserStatuses(statusMap)
+                            .build()
+                    }
+                }
+
+                trySend(Unit)
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -64,5 +89,13 @@ class FamilyApi(private val familyReference: DatabaseReference) {
         }
         statusReference.addValueEventListener(valueEventListener)
         awaitClose { statusReference.removeEventListener(valueEventListener) }
+    }
+
+    fun fetchFamilyUpdates(): Flow<Map<String, UserStatusDto?>> {
+        return statusCollectionDataStore.data.map { statusCollectionProto->
+            statusCollectionProto.userStatusesMap.mapValues {
+                statusMapper.mapToStatusDto(it.value)
+            }
+        }
     }
 }
