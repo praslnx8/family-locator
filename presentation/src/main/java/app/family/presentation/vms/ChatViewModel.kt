@@ -2,6 +2,7 @@ package app.family.presentation.vms
 
 import androidx.lifecycle.ViewModel
 import app.family.domain.usecases.MessageUseCase
+import app.family.domain.usecases.UserUseCase
 import app.family.presentation.models.MessageState
 import app.family.presentation.models.MessageViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -10,26 +11,34 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ChatViewModel @Inject constructor(private val messageUseCase: MessageUseCase) : ViewModel() {
+class ChatViewModel @Inject constructor(
+    private val messageUseCase: MessageUseCase,
+    private val userUseCase: UserUseCase
+) : ViewModel() {
 
     private val viewModelJob = SupervisorJob()
     private val viewModelScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    fun listenToMessage(): Flow<MessageViewState> {
-        return messageUseCase.listenToChat().map {
-            MessageViewState(it.map { message ->
+    fun listenToMessage(): Flow<MessageViewState> = flow {
+        val userId = userUseCase.getUser().first()?.id ?: ""
+        messageUseCase.listenToChat().map {
+            val messageViewState = MessageViewState(it.map { message ->
                 MessageState(
                     name = message.senderName,
                     message = message.message,
-                    time = message.time
+                    time = message.time,
+                    isCurrentUser = message.senderId == userId
                 )
             })
-        }
+            emit(messageViewState)
+        }.collect()
     }
 
     fun addMessage(message: String) {

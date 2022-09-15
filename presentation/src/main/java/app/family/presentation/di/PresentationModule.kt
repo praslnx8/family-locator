@@ -45,8 +45,8 @@ class PresentationModule {
     }
 
     @Provides
-    fun provideChatViewModel(messageUseCase: MessageUseCase): ChatViewModel {
-        return ChatViewModel(messageUseCase)
+    fun provideChatViewModel(messageUseCase: MessageUseCase, userUseCase: UserUseCase): ChatViewModel {
+        return ChatViewModel(messageUseCase, userUseCase)
     }
 
     @Provides

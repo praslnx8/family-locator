@@ -7,5 +7,6 @@ data class MessageViewState(
 data class MessageState(
     val name: String,
     val message: String,
-    val time: Long
+    val time: Long,
+    val isCurrentUser: Boolean
 )

@@ -19,13 +19,21 @@ class MessageApi(
 
     fun sendMessage(
         familyId: String,
+        senderId: String,
         senderName: String,
         message: String,
         time: Long
     ): Flow<Boolean> = callbackFlow {
         val messageReference = familyReference.child(familyId).child("messages")
         messageReference.push()
-            .setValue(MessageDto(senderName = senderName, message = message, time = time))
+            .setValue(
+                MessageDto(
+                    senderId = senderId,
+                    senderName = senderName,
+                    message = message,
+                    time = time
+                )
+            )
             .addOnCompleteListener {
                 if (it.isSuccessful) {
                     Log.i("Chat Api", "Success sending message")
@@ -44,8 +52,8 @@ class MessageApi(
             override fun onDataChange(snapshot: DataSnapshot) {
                 Log.i("Chat API", "Message received")
                 val messages = mutableListOf<MessageDto>()
-                snapshot.children.forEach { snapshot ->
-                    snapshot.getValue(MessageDto::class.java)?.let {
+                snapshot.children.forEach { messageSnapShot ->
+                    messageSnapShot.getValue(MessageDto::class.java)?.let {
                         messages.add(it)
                     }
                 }

@@ -21,6 +21,7 @@ class MessageUseCase(
         val familyId = userApi.getFamilyId(user?.id ?: "").first() ?: ""
         val messageSent = messageApi.sendMessage(
             familyId = familyId,
+            senderId = user?.id ?: "",
             senderName = user?.name ?: "",
             message = message,
             time = System.currentTimeMillis()

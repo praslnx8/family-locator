@@ -9,13 +9,18 @@ import com.google.firebase.database.PropertyName
 
 @Entity(
     tableName = "message",
-    indices = [Index(value = ["sender_name", "message", "time"], unique = true)]
+    indices = [Index(value = ["sender_id", "message", "time"], unique = true)]
 )
 data class MessageDto(
 
     @Exclude
     @PrimaryKey(autoGenerate = true)
     val id: Long? = null,
+
+    @ColumnInfo(name = "sender_id")
+    @get:PropertyName("sender_id")
+    @set:PropertyName("sender_id")
+    var senderId: String = "",
 
     @ColumnInfo(name = "sender_name")
     @get:PropertyName("sender_name")

@@ -7,6 +7,7 @@ class MessageMapper {
 
     fun mapFromMessageDto(messageDto: MessageDto): Message {
         return Message(
+            senderId = messageDto.senderId,
             senderName = messageDto.senderName,
             message = messageDto.message,
             time = messageDto.time

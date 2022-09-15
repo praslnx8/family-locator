@@ -67,6 +67,7 @@ class StatusSyncService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
+        Log.i("Service", "On start called")
         return START_STICKY
     }
 
