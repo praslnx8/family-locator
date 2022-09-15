@@ -2,8 +2,7 @@ package app.family.locator.ui.screens.status
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
@@ -17,7 +16,6 @@ fun FamilyStatusView(viewModel: FamilyStatusViewModel = hiltViewModel()) {
     val statusListState = viewModel.getFamilyStatuses().collectAsState(initial = emptyList())
     Column {
         Divider(
-            color = MaterialTheme.colors.onBackground,
             modifier = Modifier
                 .height(1.dp)
                 .weight(1f)

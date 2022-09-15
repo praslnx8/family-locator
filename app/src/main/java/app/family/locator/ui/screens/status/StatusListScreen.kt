@@ -3,12 +3,13 @@ package app.family.locator.ui.screens.status
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.FabPosition
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -17,6 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import app.family.locator.ui.views.InvitationDialogView
 import app.family.presentation.vms.HomeViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StatusListScreen(
     viewModel: HomeViewModel = hiltViewModel()

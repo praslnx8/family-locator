@@ -6,10 +6,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,7 +57,7 @@ fun StatusView(statusState: StatusState) {
                 Row {
                     Text(
                         text = statusState.name,
-                        style = MaterialTheme.typography.body1,
+                        style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold
                     )
                     if (statusState.isActivityValid()) {
@@ -68,24 +68,24 @@ fun StatusView(statusState: StatusState) {
                             ActivityType.DRIVING -> "Driving"
                             null -> ""
                         }
-                        Text(text = " $verb", style = MaterialTheme.typography.body1)
+                        Text(text = " $verb", style = MaterialTheme.typography.bodyMedium)
                         Text(
                             text = " $activity",
-                            style = MaterialTheme.typography.body1,
+                            style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colors.primary
+                            color = MaterialTheme.colorScheme.primary
                         )
                     }
                 }
                 if (statusState.isLocalityValid()) {
                     Text(
                         text = "at ${statusState.locality}",
-                        style = MaterialTheme.typography.body2
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
                 Text(
                     text = UIUtils.getRelativeTime(statusState.getStatusTime()),
-                    style = MaterialTheme.typography.caption
+                    style = MaterialTheme.typography.labelMedium
                 )
             }
 

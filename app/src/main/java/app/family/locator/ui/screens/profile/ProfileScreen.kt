@@ -3,9 +3,10 @@ package app.family.locator.ui.screens.profile
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -18,6 +19,7 @@ import app.family.locator.R
 import app.family.locator.ui.views.AvatarView
 import app.family.presentation.vms.ProfileViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
     val profileState = viewModel.profileState.collectAsState()
@@ -40,10 +42,10 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
                 }
                 .padding(top = 100.dp)
                 .size(100.dp),
-                textStyle = MaterialTheme.typography.h3)
+                textStyle = MaterialTheme.typography.headlineMedium)
             Text(
                 text = profileState.value.name,
-                style = MaterialTheme.typography.h4,
+                style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier
                     .constrainAs(name) {
                         start.linkTo(parent.start)

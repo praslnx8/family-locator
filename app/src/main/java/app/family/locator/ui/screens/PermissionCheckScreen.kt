@@ -1,9 +1,11 @@
 import android.Manifest
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -13,7 +15,7 @@ import app.family.locator.R
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
-@OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun PermissionCheckScreen(
     onPermissionsGranted: () -> Unit,
@@ -41,6 +43,7 @@ fun PermissionCheckScreen(
         ) {
             val (text, button) = createRefs()
             Text(
+                style = MaterialTheme.typography.bodyMedium,
                 text = stringResource(R.string.request_permission_message),
                 modifier = Modifier.constrainAs(text) {
                     top.linkTo(parent.top)
