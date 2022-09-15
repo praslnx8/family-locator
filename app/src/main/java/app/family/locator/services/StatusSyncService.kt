@@ -19,6 +19,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -59,24 +61,24 @@ class StatusSyncService : Service() {
         val scope = CoroutineScope(Dispatchers.IO + (job ?: SupervisorJob()))
         Log.i("Service", "On start called")
         scope.launch {
-            myStatusSyncUseCase.listenAndSync().collect {
-                Log.i("Service", "Listen and sync")
-            }
+            myStatusSyncUseCase.listenAndSync()
+                .catch { e -> Log.e("Service", e.message ?: "") }
+                .collect()
         }
         scope.launch {
-            uploadStatusUseCase.uploadMyStatus().collect() {
-                Log.i("Service", "Upload status")
-            }
+            uploadStatusUseCase.uploadMyStatus()
+                .catch { e -> Log.e("Service", e.message ?: "") }
+                .collect()
         }
         scope.launch {
-            updateFamilyStatusUseCase.listenAndUpdateFamilyStatus().collect() {
-                Log.i("Service", "Listen and update family status")
-            }
+            updateFamilyStatusUseCase.listenAndUpdateFamilyStatus()
+                .catch { e -> Log.e("Service", e.message ?: "") }
+                .collect()
         }
         scope.launch {
-            updateMessageUseCase.syncAndUpdateMessages().collect() {
-                Log.i("Service", "Listen and update message")
-            }
+            updateMessageUseCase.syncAndUpdateMessages()
+                .catch { e -> Log.e("Service", e.message ?: "") }
+                .collect()
         }
         Log.i("Service", "Listening to all")
         return START_STICKY

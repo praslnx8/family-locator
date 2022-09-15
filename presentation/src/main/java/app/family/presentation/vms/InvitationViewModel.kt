@@ -1,5 +1,6 @@
 package app.family.presentation.vms
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import app.family.domain.usecases.FamilyInviteUseCase
 import app.family.presentation.models.InvitationViewState
@@ -39,9 +40,8 @@ class InvitationViewModel @Inject constructor(private val inviteUseCase: FamilyI
                             inviteKey = it
                         )
                     )
-                }.catch {
-
-                }.collect()
+                }.catch { e -> Log.e("Invitation ViewModel", e.message ?: "") }
+                .collect()
         }
     }
 
@@ -57,7 +57,8 @@ class InvitationViewModel @Inject constructor(private val inviteUseCase: FamilyI
                             isJoinedFamily = true
                         )
                     )
-                }.collect()
+                }.catch { e -> Log.e("Invitation ViewModel", e.message ?: "") }
+                .collect()
         }
     }
 

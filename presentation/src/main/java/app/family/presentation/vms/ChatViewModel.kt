@@ -1,5 +1,6 @@
 package app.family.presentation.vms
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import app.family.domain.usecases.MessageUseCase
 import app.family.domain.usecases.UserUseCase
@@ -8,6 +9,7 @@ import app.family.presentation.models.MessageViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -17,6 +19,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(FlowPreview::class)
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     private val messageUseCase: MessageUseCase,
@@ -38,13 +41,13 @@ class ChatViewModel @Inject constructor(
                     )
                 })
             }
-        }
+        }.catch { e -> Log.e("ChatViewModel", e.message ?: "") }
     }
 
     fun addMessage(message: String) {
         viewModelScope.launch {
             messageUseCase.sendMessage(message)
-                .catch { }
+                .catch { e -> Log.e("ChatViewModel", e.message ?: "") }
                 .collect()
         }
     }

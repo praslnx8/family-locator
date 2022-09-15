@@ -12,6 +12,7 @@ import com.google.android.gms.location.DetectedActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -37,7 +38,9 @@ class ActivityTransitionReceiver : BroadcastReceiver() {
             if (activityType != null) {
                 Log.i("Activity Detection", "Detected Activity $activityType")
                 GlobalScope.launch {
-                    myStatusSyncUseCase.syncActivityDetection(activityType).collect()
+                    myStatusSyncUseCase.syncActivityDetection(activityType)
+                        .catch { e -> Log.e("Receiver", e.message ?: "") }
+                        .collect()
                 }
             }
         }

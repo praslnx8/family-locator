@@ -1,11 +1,13 @@
 package app.family.presentation.vms
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import app.family.domain.usecases.MyStatusUseCase
 import app.family.domain.usecases.UserUseCase
 import app.family.presentation.models.StatusState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
@@ -29,6 +31,6 @@ class MyStatusViewModel @Inject constructor(
                 weatherTime = status.weatherStatus?.time,
                 time = status.time
             )
-        }
+        }.catch { e -> Log.e("MyStatusViewModel", e.message ?: "") }
     }
 }

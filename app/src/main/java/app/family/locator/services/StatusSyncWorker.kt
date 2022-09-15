@@ -1,6 +1,7 @@
 package app.family.locator.services
 
 import android.content.Context
+import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
@@ -10,6 +11,7 @@ import app.family.domain.usecases.MyStatusSyncUseCase
 import app.family.domain.usecases.UploadStatusUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import java.time.Duration
 
@@ -21,8 +23,12 @@ class StatusSyncWorker @AssistedInject constructor(
 ) : CoroutineWorker(appContext, workerParameters) {
 
     override suspend fun doWork(): Result {
-        syncUseCase.syncNow().collect()
-        uploadUseCase.uploadMyStatus().collect()
+        syncUseCase.syncNow()
+            .catch { e -> Log.e("Worker", e.message ?: "") }
+            .collect()
+        uploadUseCase.uploadMyStatus()
+            .catch { e -> Log.e("Worker", e.message ?: "") }
+            .collect()
         return Result.success()
     }
 

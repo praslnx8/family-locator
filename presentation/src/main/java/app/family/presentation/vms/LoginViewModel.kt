@@ -1,5 +1,6 @@
 package app.family.presentation.vms
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import app.family.domain.usecases.LoginUseCase
 import app.family.presentation.models.LoginState
@@ -9,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
@@ -48,7 +50,8 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
                     _loginState.emit(
                         LoginState(isFetching = true)
                     )
-                }.onCompletion {
+                }.catch { e -> Log.e("LoginViewModel", e.message ?: "") }
+                .onCompletion {
                     checkLogin()
                 }.collect()
         }
