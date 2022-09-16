@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.IBinder
-import android.util.Log
 import app.family.domain.usecases.MyStatusSyncUseCase
 import app.family.domain.usecases.UpdateFamilyStatusUseCase
 import app.family.domain.usecases.UpdateMessageUseCase
@@ -22,6 +21,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -59,28 +59,26 @@ class StatusSyncService : Service() {
         job?.cancel("Invalidate old ones")
         job = SupervisorJob()
         val scope = CoroutineScope(Dispatchers.IO + (job ?: SupervisorJob()))
-        Log.i("Service", "On start called")
         scope.launch {
             myStatusSyncUseCase.listenAndSync()
-                .catch { e -> Log.e("Service", e.message ?: "") }
+                .catch { e -> Timber.e(e) }
                 .collect()
         }
         scope.launch {
             uploadStatusUseCase.uploadMyStatus()
-                .catch { e -> Log.e("Service", e.message ?: "") }
+                .catch { e -> Timber.e(e) }
                 .collect()
         }
         scope.launch {
             updateFamilyStatusUseCase.listenAndUpdateFamilyStatus()
-                .catch { e -> Log.e("Service", e.message ?: "") }
+                .catch { e -> Timber.e(e) }
                 .collect()
         }
         scope.launch {
             updateMessageUseCase.syncAndUpdateMessages()
-                .catch { e -> Log.e("Service", e.message ?: "") }
+                .catch { e -> Timber.e(e) }
                 .collect()
         }
-        Log.i("Service", "Listening to all")
         return START_STICKY
     }
 
@@ -104,10 +102,8 @@ class StatusSyncService : Service() {
                 TimeUnit.MINUTES.toMillis(2),
                 pendingIntent
             ).addOnCompleteListener {
-                if (it.isSuccessful) {
-                    Log.i("Activity Recognition", "Success requesting")
-                } else {
-                    Log.e("Activity Recognition", "Error requesting " + it.exception?.message)
+                if (it.isSuccessful.not()) {
+                    Timber.e(it.exception)
                 }
             }
     }

@@ -1,6 +1,5 @@
 package app.family.presentation.vms
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import app.family.domain.usecases.FetchFamilyStatusUseCase
 import app.family.presentation.models.StatusState
@@ -8,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,6 +31,6 @@ class FamilyStatusViewModel @Inject constructor(
                     time = userStatus.status.time
                 )
             }
-        }.catch { e -> Log.e("StatusViewModel", e.message ?: "") }
+        }.catch { e -> Timber.e(e) }
     }
 }

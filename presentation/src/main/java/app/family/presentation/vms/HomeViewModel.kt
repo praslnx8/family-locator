@@ -10,6 +10,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,7 +23,7 @@ class HomeViewModel @Inject constructor(
     fun pushFamilyStatus() {
         viewModelScope.launch {
             uploadStatusUseCase.uploadMyStatus()
-                .catch { e -> Log.e("HomeViewModel", e.message ?: "") }
+                .catch { e -> Timber.e(e) }
                 .collect()
         }
     }

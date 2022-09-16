@@ -1,6 +1,5 @@
 package app.family.presentation.vms
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import app.family.domain.usecases.UserUseCase
 import app.family.presentation.models.ProfileState
@@ -12,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,7 +26,7 @@ class ProfileViewModel @Inject constructor(
     fun getProfile() {
         viewModelScope.launch {
             userUseCase.getUser()
-                .catch { e -> Log.e("ProfileViewModel", e.message ?: "") }
+                .catch { e -> Timber.e(e) }
                 .collect { user ->
                     _profileState.emit(ProfileState(user.name ?: ""))
                 }

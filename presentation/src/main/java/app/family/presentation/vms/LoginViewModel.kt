@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -50,7 +51,7 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
                     _loginState.emit(
                         LoginState(isFetching = true)
                     )
-                }.catch { e -> Log.e("LoginViewModel", e.message ?: "") }
+                }.catch { e -> Timber.e(e) }
                 .onCompletion {
                     checkLogin()
                 }.collect()

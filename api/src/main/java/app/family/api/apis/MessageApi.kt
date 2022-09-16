@@ -1,6 +1,5 @@
 package app.family.api.apis
 
-import android.util.Log
 import app.family.api.db.daos.MessageDao
 import app.family.api.models.MessageDto
 import com.google.firebase.database.DataSnapshot
@@ -11,6 +10,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
+import timber.log.Timber
 
 class MessageApi(
     private val familyReference: DatabaseReference,
@@ -59,7 +59,7 @@ class MessageApi(
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.w("Chat API", "Listening to chat cancelled " + error.message)
+                Timber.w("Listening to chat cancelled " + error.message)
             }
         }
         messageReference.limitToLast(100).addValueEventListener(valueEventListener)

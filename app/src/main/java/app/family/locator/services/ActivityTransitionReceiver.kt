@@ -4,7 +4,6 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import app.family.domain.models.status.ActivityType
 import app.family.domain.usecases.MyStatusSyncUseCase
 import com.google.android.gms.location.ActivityRecognitionResult
@@ -15,6 +14,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -25,7 +25,7 @@ class ActivityTransitionReceiver : BroadcastReceiver() {
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun onReceive(context: Context?, intent: Intent?) {
-        Log.i("Activity Detection", "Detected Activity")
+        Timber.i("Detected Activity")
         if (intent != null && ActivityRecognitionResult.hasResult(intent)) {
             val result = ActivityRecognitionResult.extractResult(intent)
             val activityType = when (result?.mostProbableActivity?.type ?: 0) {
@@ -36,10 +36,10 @@ class ActivityTransitionReceiver : BroadcastReceiver() {
                 else -> null
             }
             if (activityType != null) {
-                Log.i("Activity Detection", "Detected Activity $activityType")
+                Timber.i("Detected Activity $activityType")
                 GlobalScope.launch {
                     myStatusSyncUseCase.syncActivityDetection(activityType)
-                        .catch { e -> Log.e("Receiver", e.message ?: "") }
+                        .catch { e -> Timber.e(e) }
                         .collect()
                 }
             }

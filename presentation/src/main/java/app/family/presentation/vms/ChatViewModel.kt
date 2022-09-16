@@ -1,6 +1,5 @@
 package app.family.presentation.vms
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import app.family.domain.usecases.MessageUseCase
 import app.family.domain.usecases.UserUseCase
@@ -17,6 +16,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @OptIn(FlowPreview::class)
@@ -41,13 +41,13 @@ class ChatViewModel @Inject constructor(
                     )
                 })
             }
-        }.catch { e -> Log.e("ChatViewModel", e.message ?: "") }
+        }.catch { e -> Timber.e(e) }
     }
 
     fun addMessage(message: String) {
         viewModelScope.launch {
             messageUseCase.sendMessage(message)
-                .catch { e -> Log.e("ChatViewModel", e.message ?: "") }
+                .catch { e -> Timber.e(e) }
                 .collect()
         }
     }

@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,6 +32,6 @@ class MyStatusViewModel @Inject constructor(
                 weatherTime = status.weatherStatus?.time,
                 time = status.time
             )
-        }.catch { e -> Log.e("MyStatusViewModel", e.message ?: "") }
+        }.catch { e -> Timber.e(e) }
     }
 }

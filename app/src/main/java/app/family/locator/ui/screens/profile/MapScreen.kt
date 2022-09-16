@@ -1,6 +1,5 @@
 package app.family.locator.ui.screens.profile
 
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -15,6 +14,7 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import timber.log.Timber
 
 @Composable
 fun MapScreen(viewModel: MapScreenViewModel = hiltViewModel()) {
@@ -60,7 +60,7 @@ fun MapScreen(viewModel: MapScreenViewModel = hiltViewModel()) {
                 )
             )
         } catch (e: Exception) {
-            Log.e("MapsScreen", e.message ?: "")
+            Timber.e(e)
         }
     }
 

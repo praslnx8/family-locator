@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,7 +41,7 @@ class InvitationViewModel @Inject constructor(private val inviteUseCase: FamilyI
                             inviteKey = it
                         )
                     )
-                }.catch { e -> Log.e("Invitation ViewModel", e.message ?: "") }
+                }.catch { e -> Timber.e(e) }
                 .collect()
         }
     }
@@ -57,7 +58,7 @@ class InvitationViewModel @Inject constructor(private val inviteUseCase: FamilyI
                             isJoinedFamily = true
                         )
                     )
-                }.catch { e -> Log.e("Invitation ViewModel", e.message ?: "") }
+                }.catch { e -> Timber.e(e) }
                 .collect()
         }
     }
