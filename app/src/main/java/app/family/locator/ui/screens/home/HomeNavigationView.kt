@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import app.family.locator.ui.screens.chat.ChatScreen
+import app.family.locator.ui.screens.profile.MapScreen
 import app.family.locator.ui.screens.profile.ProfileScreen
 import app.family.locator.ui.screens.status.StatusListScreen
 
@@ -17,6 +18,9 @@ fun HomeNavigationView(navController: NavHostController, modifier: Modifier = Mo
         }
         composable(BottomNavItem.Chat.route) {
             ChatScreen()
+        }
+        composable(BottomNavItem.Map.route) {
+            MapScreen()
         }
         composable(Screen.Profile.route) {
             ProfileScreen()

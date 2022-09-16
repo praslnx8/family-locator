@@ -10,6 +10,7 @@ import app.family.presentation.vms.ChatViewModel
 import app.family.presentation.vms.FamilyStatusViewModel
 import app.family.presentation.vms.HomeViewModel
 import app.family.presentation.vms.LoginViewModel
+import app.family.presentation.vms.MapScreenViewModel
 import app.family.presentation.vms.MyStatusViewModel
 import app.family.presentation.vms.ProfileViewModel
 import dagger.Module
@@ -45,12 +46,24 @@ class PresentationModule {
     }
 
     @Provides
-    fun provideChatViewModel(messageUseCase: MessageUseCase, userUseCase: UserUseCase): ChatViewModel {
+    fun provideChatViewModel(
+        messageUseCase: MessageUseCase,
+        userUseCase: UserUseCase
+    ): ChatViewModel {
         return ChatViewModel(messageUseCase, userUseCase)
     }
 
     @Provides
     fun provideProfileViewModel(userUseCase: UserUseCase): ProfileViewModel {
         return ProfileViewModel(userUseCase)
+    }
+
+    @Provides
+    fun provideMapViewModel(
+        userUseCase: UserUseCase,
+        myStatusUseCase: MyStatusUseCase,
+        familyStatusUseCase: FetchFamilyStatusUseCase
+    ): MapScreenViewModel {
+        return MapScreenViewModel(userUseCase, myStatusUseCase, familyStatusUseCase)
     }
 }

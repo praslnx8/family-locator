@@ -5,6 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -25,6 +26,7 @@ fun HomeBottomNavigation(
     val items = listOf(
         BottomNavItem.Home,
         BottomNavItem.Chat,
+        BottomNavItem.Map,
         BottomNavItem.Profile
     )
 
@@ -75,6 +77,12 @@ sealed class BottomNavItem(
         icon = Icons.Default.Email
     )
 
+    object Map : BottomNavItem(
+        route = Screen.Map.route,
+        titleResId = R.string.map,
+        icon = Icons.Default.Place
+    )
+
     object Profile : BottomNavItem(
         route = Screen.Profile.route,
         titleResId = R.string.profile,
@@ -85,5 +93,6 @@ sealed class BottomNavItem(
 sealed class Screen(val route: String) {
     object Home : Screen("home")
     object Chat : Screen("chat")
+    object Map : Screen("map")
     object Profile : Screen("profile")
 }

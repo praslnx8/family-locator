@@ -29,6 +29,7 @@ class StatusSyncWorker @AssistedInject constructor(
         uploadUseCase.uploadMyStatus()
             .catch { e -> Log.e("Worker", e.message ?: "") }
             .collect()
+        StatusSyncService.startService(appContext)
         return Result.success()
     }
 
