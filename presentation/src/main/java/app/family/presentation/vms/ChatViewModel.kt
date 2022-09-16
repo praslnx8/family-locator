@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -23,25 +24,29 @@ import javax.inject.Inject
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     private val messageUseCase: MessageUseCase,
-    private val userUseCase: UserUseCase
+    private val userUseCase: UserUseCase,
 ) : ViewModel() {
 
     private val viewModelJob = SupervisorJob()
     private val viewModelScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
     fun listenToMessage(): Flow<MessageViewState> {
-        return userUseCase.getUser().flatMapMerge { user ->
-            messageUseCase.listenToChat().map { messages ->
-                MessageViewState(messages.map { message ->
-                    MessageState(
-                        name = message.senderName,
-                        message = message.message,
-                        time = message.time,
-                        isCurrentUser = message.senderId == user.id
-                    )
-                })
+        return userUseCase.getUser()
+            .flatMapMerge { user ->
+                messageUseCase.listenToChat().map { messages ->
+                    MessageViewState(messages.map { message ->
+                        MessageState(
+                            name = message.senderName,
+                            message = message.message,
+                            time = message.time,
+                            isCurrentUser = message.senderId == user.id
+                        )
+                    })
+                }
+            }.onEach {
+                messageUseCase.setLastSyncTime().collect()
             }
-        }.catch { e -> Timber.e(e) }
+            .catch { e -> Timber.e(e) }
     }
 
     fun clearNotifications(): Flow<Unit> {

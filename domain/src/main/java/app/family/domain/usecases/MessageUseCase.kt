@@ -32,10 +32,12 @@ class MessageUseCase(
     }
 
     fun getUnReadMessages(): Flow<List<Message>> {
-        return messageApi.getLastSyncedTime().flatMapMerge { lastSyncedTime ->
-            messageApi.fetchMessages(lastSyncedTime).map { messageDtoList ->
-                messageDtoList.map { messageDto ->
-                    messageMapper.mapFromMessageDto(messageDto)
+        return authApi.getUser().flatMapMerge { userDto ->
+            messageApi.getLastSyncedTime().flatMapMerge { lastSyncedTime ->
+                messageApi.fetchMessages(lastSyncedTime).map { messageDtoList ->
+                    messageDtoList.map { messageDto ->
+                        messageMapper.mapFromMessageDto(messageDto)
+                    }.filter { message -> message.senderId != userDto.id }
                 }
             }
         }

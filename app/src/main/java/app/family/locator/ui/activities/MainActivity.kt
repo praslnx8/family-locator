@@ -12,14 +12,21 @@ import app.family.locator.services.StatusSyncService
 import app.family.locator.services.StatusSyncWorker
 import app.family.locator.ui.nav.HomeNavigation
 import app.family.locator.ui.theme.FamilyLocatorTheme
+import app.family.locator.utils.NotificationUtils
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var notificationUtils: NotificationUtils
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         attachUI()
         syncStatus()
+        notificationUtils.clearChatNotification()
     }
 
     private fun attachUI() {

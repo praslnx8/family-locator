@@ -11,6 +11,7 @@ import app.family.domain.usecases.MyStatusSyncUseCase
 import app.family.domain.usecases.UpdateFamilyStatusUseCase
 import app.family.domain.usecases.UpdateMessageUseCase
 import app.family.domain.usecases.UploadStatusUseCase
+import app.family.locator.utils.AppUtils
 import app.family.locator.utils.NotificationUtils
 import com.google.android.gms.location.ActivityRecognition
 import dagger.hilt.android.AndroidEntryPoint
@@ -83,9 +84,13 @@ class StatusSyncService : Service() {
             updateMessageUseCase.syncAndUpdateMessages()
                 .catch { e -> Timber.e(e) }
                 .onEach {
-                    messageUseCase.getUnReadMessages().onEach { messages->
-                        notificationUtils.showChatNotification(messages)
-                    }.collect()
+                    if (AppUtils.isAppInForeGround().not()) {
+                        messageUseCase.getUnReadMessages().onEach { messages ->
+                            if (messages.isNotEmpty()) {
+                                notificationUtils.showChatNotification(messages)
+                            }
+                        }.collect()
+                    }
                 }
                 .collect()
         }
