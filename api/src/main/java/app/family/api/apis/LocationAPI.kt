@@ -11,6 +11,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class LocationAPI(
@@ -35,8 +36,9 @@ class LocationAPI(
                 super.onLocationResult(locationResult)
 
                 locationResult.lastLocation?.let { location ->
+                    Timber.i("Fetched location")
                     trySend(convertToLocationDto(location))
-                }
+                } ?: Timber.w("Location not found")
             }
         }
 
@@ -52,9 +54,11 @@ class LocationAPI(
     private fun fetchCurrentLocation(): Flow<Location> = callbackFlow {
         locationProviderClient.lastLocation.addOnCompleteListener {
             if (it.isSuccessful) {
+                Timber.i("Fetched Current Location")
                 trySend(it.result)
                 close()
             } else {
+                Timber.e("Error fetching Location", it.exception)
                 close(it.exception)
             }
         }

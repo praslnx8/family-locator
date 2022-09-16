@@ -82,6 +82,9 @@ dependencies {
     //Truth
     testImplementation "com.google.truth:truth:$truth_version"
     androidTestImplementation "com.google.truth:truth:$truth_version"
+
+    //Timber
+    implementation "com.jakewharton.timber:timber:$timber_version"
 }
 
 protobuf {

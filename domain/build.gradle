@@ -38,6 +38,9 @@ dependencies {
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
 
+    //Timber
+    implementation "com.jakewharton.timber:timber:$timber_version"
+
     //Junit
     testImplementation "junit:junit:$junit_version"
 

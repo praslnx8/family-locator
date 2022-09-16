@@ -44,6 +44,9 @@ dependencies {
     //Android Junit
     androidTestImplementation "androidx.test.ext:junit:$android_junit_version"
 
+    //Timber
+    implementation "com.jakewharton.timber:timber:$timber_version"
+
     //Domain
     implementation(project(":domain"))
 }

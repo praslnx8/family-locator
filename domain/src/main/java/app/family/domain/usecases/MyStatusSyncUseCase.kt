@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
 
 @OptIn(FlowPreview::class)
 class MyStatusSyncUseCase(
@@ -37,10 +36,14 @@ class MyStatusSyncUseCase(
     }
 
     private fun listenAndSyncLocationApi(): Flow<Unit> {
-        return locationAPI.listenToLocationChange().map { locationDto ->
-            updateLocation(locationDto)
-            syncDeviceApi().collect()
-            syncWeather(locationDto)
+        return locationAPI.listenToLocationChange().flatMapMerge { locationDto ->
+            combine(
+                updateLocation(locationDto),
+                syncDeviceApi(),
+                syncWeather(locationDto)
+            ) { _, _, _ ->
+
+            }
         }
     }
 
