@@ -114,6 +114,9 @@ dependencies {
     //Timber
     implementation "com.jakewharton.timber:timber:$timber_version"
 
+    //Splash
+    implementation 'androidx.core:core-splashscreen:1.0.0'
+
     //Presentation
     implementation(project(":presentation"))
 

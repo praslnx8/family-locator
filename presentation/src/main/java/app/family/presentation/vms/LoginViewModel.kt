@@ -1,6 +1,5 @@
 package app.family.presentation.vms
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import app.family.domain.usecases.LoginUseCase
 import app.family.presentation.models.LoginState

@@ -9,7 +9,9 @@ import app.family.locator.ui.route.ScreenRoute
 import app.family.locator.ui.screens.LoginScreen
 
 @Composable
-fun LoginNavigation(onLoginCompleted: () -> Unit) {
+fun LoginNavigation(
+    onLoginCompleted: () -> Unit
+) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,

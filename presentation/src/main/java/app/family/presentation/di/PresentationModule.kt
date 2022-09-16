@@ -13,6 +13,7 @@ import app.family.presentation.vms.LoginViewModel
 import app.family.presentation.vms.MapScreenViewModel
 import app.family.presentation.vms.MyStatusViewModel
 import app.family.presentation.vms.ProfileViewModel
+import app.family.presentation.vms.SplashViewModel
 import app.family.presentation.vms.StatusViewModel
 import dagger.Module
 import dagger.Provides
@@ -71,5 +72,10 @@ class PresentationModule {
     @Provides
     fun provideHomeViewModel(messageUseCase: MessageUseCase): HomeViewModel {
         return HomeViewModel(messageUseCase)
+    }
+
+    @Provides
+    fun provideSplashViewModel(userUseCase: UserUseCase): SplashViewModel {
+        return SplashViewModel(userUseCase)
     }
 }

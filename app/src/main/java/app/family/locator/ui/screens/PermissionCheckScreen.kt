@@ -24,7 +24,8 @@ fun PermissionCheckScreen(
         rememberMultiplePermissionsState(
             permissions = listOf(
                 Manifest.permission.ACTIVITY_RECOGNITION,
-                Manifest.permission.ACCESS_FINE_LOCATION
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.POST_NOTIFICATIONS
             )
         )
 

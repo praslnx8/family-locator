@@ -1,6 +1,8 @@
 package app.family.locator.ui.activities
 
 import android.Manifest
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -55,5 +57,10 @@ class LoginActivity : ComponentActivity() {
 
     companion object {
         private const val BG_LOC_PERMISSION_REQ_CODE = 1
+
+        fun startActivity(context: Context) {
+            val intent = Intent(context, LoginActivity::class.java)
+            context.startActivity(intent)
+        }
     }
 }
