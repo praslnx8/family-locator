@@ -5,6 +5,8 @@ import android.location.Geocoder
 import android.media.AudioManager
 import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import app.family.api.BuildConfig
 import app.family.api.apis.AuthApi
 import app.family.api.apis.DeviceApi
@@ -47,6 +49,8 @@ private val Context.statusCollectionDataStore: DataStore<StatusCollectionProto> 
     fileName = "status_collection.pb",
     serializer = StatusCollectionProtoSerializer
 )
+
+val Context.appDataStore: DataStore<Preferences> by preferencesDataStore(name = "app")
 
 @InstallIn(SingletonComponent::class)
 @Module
@@ -132,7 +136,8 @@ class APIModule {
     ): MessageApi {
         return MessageApi(
             database.getReference("families"),
-            AppDatabaseProvider(context).getDatabase().messageDao()
+            AppDatabaseProvider(context).getDatabase().messageDao(),
+            context.appDataStore
         )
     }
 }

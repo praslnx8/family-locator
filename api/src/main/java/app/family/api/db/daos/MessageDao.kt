@@ -15,4 +15,7 @@ interface MessageDao {
 
     @Query("SELECT * FROM `message` ORDER BY time DESC LIMIT 50")
     fun fetchMessages(): Flow<List<MessageDto>>
+
+    @Query("SELECT * FROM `message` WHERE time > :time ORDER BY time DESC LIMIT 10")
+    fun fetchUnReadMessages(time: Long): Flow<List<MessageDto>>
 }

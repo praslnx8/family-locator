@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -32,13 +33,20 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import app.family.locator.R
 import app.family.presentation.models.MessageViewState
 import app.family.presentation.vms.ChatViewModel
+import kotlinx.coroutines.flow.collect
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatScreen(viewModel: ChatViewModel = hiltViewModel()) {
+fun ChatScreen(
+    viewModel: ChatViewModel = hiltViewModel()
+) {
     val chatMessageViewState =
         viewModel.listenToMessage().collectAsState(initial = MessageViewState())
     val messageTextState = rememberSaveable(Unit) { mutableStateOf("") }
+
+    LaunchedEffect(key1 = Unit) {
+        viewModel.clearNotifications().collect()
+    }
 
     Column {
         Box(modifier = Modifier.weight(1f)) {

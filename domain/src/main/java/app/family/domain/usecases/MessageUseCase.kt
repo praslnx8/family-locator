@@ -31,9 +31,23 @@ class MessageUseCase(
         }
     }
 
+    fun getUnReadMessages(): Flow<List<Message>> {
+        return messageApi.getLastSyncedTime().flatMapMerge { lastSyncedTime ->
+            messageApi.fetchMessages(lastSyncedTime).map { messageDtoList ->
+                messageDtoList.map { messageDto ->
+                    messageMapper.mapFromMessageDto(messageDto)
+                }
+            }
+        }
+    }
+
     fun listenToChat(): Flow<List<Message>> {
         return messageApi.fetchMessages().map { messageList ->
             messageList.map { messageDto -> messageMapper.mapFromMessageDto(messageDto) }
         }
+    }
+
+    fun setLastSyncTime(): Flow<Unit> {
+        return messageApi.setLastSyncedTime(System.currentTimeMillis())
     }
 }

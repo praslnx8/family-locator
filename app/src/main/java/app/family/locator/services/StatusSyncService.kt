@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.IBinder
+import app.family.domain.usecases.MessageUseCase
 import app.family.domain.usecases.MyStatusSyncUseCase
 import app.family.domain.usecases.UpdateFamilyStatusUseCase
 import app.family.domain.usecases.UpdateMessageUseCase
@@ -20,6 +21,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -39,6 +41,9 @@ class StatusSyncService : Service() {
 
     @Inject
     lateinit var updateMessageUseCase: UpdateMessageUseCase
+
+    @Inject
+    lateinit var messageUseCase: MessageUseCase
 
     @Inject
     lateinit var notificationUtils: NotificationUtils
@@ -77,6 +82,11 @@ class StatusSyncService : Service() {
         scope.launch {
             updateMessageUseCase.syncAndUpdateMessages()
                 .catch { e -> Timber.e(e) }
+                .onEach {
+                    messageUseCase.getUnReadMessages().onEach { messages->
+                        notificationUtils.showChatNotification(messages)
+                    }.collect()
+                }
                 .collect()
         }
         return START_STICKY

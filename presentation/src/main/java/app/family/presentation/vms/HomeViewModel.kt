@@ -1,30 +1,20 @@
 package app.family.presentation.vms
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
-import app.family.domain.usecases.UploadStatusUseCase
+import app.family.domain.usecases.MessageUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import timber.log.Timber
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val uploadStatusUseCase: UploadStatusUseCase
+    private val messageUseCase: MessageUseCase
 ) : ViewModel() {
-    private val viewModelJob = SupervisorJob()
-    private val viewModelScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    fun pushFamilyStatus() {
-        viewModelScope.launch {
-            uploadStatusUseCase.uploadMyStatus()
-                .catch { e -> Timber.e(e) }
-                .collect()
+    fun getUnReadMessageCount(): Flow<Int> {
+        return messageUseCase.getUnReadMessages().map {
+            it.count()
         }
     }
 }

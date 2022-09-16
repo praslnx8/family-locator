@@ -13,4 +13,5 @@
     <string name="chat">Chat</string>
     <string name="profile">Profile</string>
     <string name="map">Map</string>
+    <string name="chat_notif_channel_name">Chat Notifications</string>
 </resources>

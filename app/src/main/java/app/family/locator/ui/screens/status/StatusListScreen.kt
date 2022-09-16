@@ -18,12 +18,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import app.family.locator.services.StatusSyncService
 import app.family.locator.ui.views.InvitationDialogView
-import app.family.presentation.vms.HomeViewModel
+import app.family.presentation.vms.StatusViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StatusListScreen(
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: StatusViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val inviteClicked = rememberSaveable(Unit) { mutableStateOf(false) }

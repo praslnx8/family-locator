@@ -13,6 +13,7 @@ import app.family.presentation.vms.LoginViewModel
 import app.family.presentation.vms.MapScreenViewModel
 import app.family.presentation.vms.MyStatusViewModel
 import app.family.presentation.vms.ProfileViewModel
+import app.family.presentation.vms.StatusViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -41,8 +42,8 @@ class PresentationModule {
     }
 
     @Provides
-    fun provideHomeViewModel(uploadStatusUseCase: UploadStatusUseCase): HomeViewModel {
-        return HomeViewModel(uploadStatusUseCase)
+    fun provideStatusViewModel(uploadStatusUseCase: UploadStatusUseCase): StatusViewModel {
+        return StatusViewModel(uploadStatusUseCase)
     }
 
     @Provides
@@ -65,5 +66,10 @@ class PresentationModule {
         familyStatusUseCase: FetchFamilyStatusUseCase
     ): MapScreenViewModel {
         return MapScreenViewModel(userUseCase, myStatusUseCase, familyStatusUseCase)
+    }
+
+    @Provides
+    fun provideHomeViewModel(messageUseCase: MessageUseCase): HomeViewModel {
+        return HomeViewModel(messageUseCase)
     }
 }

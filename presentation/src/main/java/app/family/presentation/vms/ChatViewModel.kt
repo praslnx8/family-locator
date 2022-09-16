@@ -44,6 +44,10 @@ class ChatViewModel @Inject constructor(
         }.catch { e -> Timber.e(e) }
     }
 
+    fun clearNotifications(): Flow<Unit> {
+        return messageUseCase.setLastSyncTime()
+    }
+
     fun addMessage(message: String) {
         viewModelScope.launch {
             messageUseCase.sendMessage(message)

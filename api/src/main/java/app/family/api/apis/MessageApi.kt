@@ -1,5 +1,9 @@
 package app.family.api.apis
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.longPreferencesKey
 import app.family.api.db.daos.MessageDao
 import app.family.api.models.MessageDto
 import com.google.firebase.database.DataSnapshot
@@ -10,11 +14,13 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import timber.log.Timber
 
 class MessageApi(
     private val familyReference: DatabaseReference,
-    private val messageDao: MessageDao
+    private val messageDao: MessageDao,
+    private val dataStore: DataStore<Preferences>
 ) {
 
     fun sendMessage(
@@ -73,5 +79,26 @@ class MessageApi(
 
     fun fetchMessages(): Flow<List<MessageDto>> {
         return messageDao.fetchMessages()
+    }
+
+    fun fetchMessages(time: Long): Flow<List<MessageDto>> {
+        return messageDao.fetchUnReadMessages(time)
+    }
+
+    fun getLastSyncedTime(): Flow<Long> {
+        return dataStore.data.map { preferences ->
+            preferences[longPreferencesKey(LAST_SYNCED_TIME_KEY)] ?: 0L
+        }
+    }
+
+    fun setLastSyncedTime(time: Long): Flow<Unit> = flow {
+        dataStore.edit { preferences ->
+            preferences[longPreferencesKey(LAST_SYNCED_TIME_KEY)] = time
+        }
+        emit(Unit)
+    }
+
+    companion object {
+        private const val LAST_SYNCED_TIME_KEY = "LAST_SYNCED_TIME"
     }
 }

@@ -18,11 +18,12 @@ import java.time.Duration
 class StatusSyncWorker @AssistedInject constructor(
     @Assisted private val appContext: Context,
     @Assisted workerParameters: WorkerParameters,
-    private val syncUseCase: MyStatusSyncUseCase,
-    private val uploadUseCase: UploadStatusUseCase
+    val syncUseCase: MyStatusSyncUseCase,
+    val uploadUseCase: UploadStatusUseCase
 ) : CoroutineWorker(appContext, workerParameters) {
 
     override suspend fun doWork(): Result {
+        Timber.i("Worker started")
         syncUseCase.syncNow()
             .catch { e -> Timber.e(e) }
             .collect()
@@ -30,6 +31,7 @@ class StatusSyncWorker @AssistedInject constructor(
             .catch { e -> Timber.e(e) }
             .collect()
         StatusSyncService.startService(appContext)
+        Timber.i("Worker Finished")
         return Result.success()
     }
 
