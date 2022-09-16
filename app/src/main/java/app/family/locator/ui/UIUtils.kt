@@ -39,4 +39,12 @@ object UIUtils {
         return DateUtils.getRelativeTimeSpanString(time)
             .toString()
     }
+
+    fun getAvatarText(name: String): String {
+        val stringBuilder = StringBuilder()
+        name.split(" ").forEach {
+            stringBuilder.append(it.firstOrNull() ?: "")
+        }
+        return stringBuilder.toString()
+    }
 }

@@ -1,4 +1,4 @@
-package app.family.locator.ui.screens.profile
+package app.family.locator.ui.screens.map
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -11,8 +11,6 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import timber.log.Timber
 
@@ -29,15 +27,13 @@ fun MapScreen(viewModel: MapScreenViewModel = hiltViewModel()) {
         cameraPositionState = cameraPosition
     ) {
         mapDataList.value.forEach { mapDataState ->
-            Marker(
-                state = MarkerState(
-                    position = LatLng(
-                        mapDataState.position.lat,
-                        mapDataState.position.lon
-                    )
+            MapMarker(
+                position = LatLng(
+                    mapDataState.position.lat,
+                    mapDataState.position.lon
                 ),
                 title = mapDataState.name,
-                snippet = mapDataState.name
+                name = mapDataState.name,
             )
         }
     }

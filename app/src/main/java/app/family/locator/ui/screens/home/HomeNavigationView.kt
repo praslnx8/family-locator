@@ -6,7 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import app.family.locator.ui.screens.chat.ChatScreen
-import app.family.locator.ui.screens.profile.MapScreen
+import app.family.locator.ui.screens.map.MapScreen
 import app.family.locator.ui.screens.profile.ProfileScreen
 import app.family.locator.ui.screens.status.StatusListScreen
 
